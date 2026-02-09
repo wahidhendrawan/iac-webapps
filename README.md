@@ -4,25 +4,25 @@ A modern, visual web application for generating Infrastructure as Code (IaC) con
 
 ## Features
 
-*   **Visual Resource Management**: Drag-and-drop or click-to-add resources from a comprehensive sidebar.
-*   **Multi-Cloud Support**: Configure resources for:
-    *   **AWS** (EC2, S3)
-    *   **Azure** (Virtual Machines)
-    *   **Google Cloud** (Compute Instances)
-    *   **VMware vSphere** (Virtual Machines)
-    *   **Local** (Files)
-*   **Real-Time Code Generation**: Instantly preview the generated Terraform HCL code as you configure your resources.
-*   **Live Syntax Highlighting**: View the generated code with syntax highlighting for better readability.
-*   **Property Configuration**: Dynamic forms based on resource schemas allow you to easily configure properties (e.g., AMI ID, instance type, machine type).
-*   **Copy & Download**: Quickly copy the generated code to your clipboard or download it as a `.tf` file.
-*   **Dockerized**: Run the entire application in a lightweight Docker container.
+* **Visual Resource Management**: Drag-and-drop or click-to-add resources from a comprehensive sidebar.
+* **Multi-Cloud Support**: Configure resources for:
+    * **AWS** (EC2, S3)
+    * **Azure** (Virtual Machines)
+    * **Google Cloud** (Compute Instances)
+    * **VMware vSphere** (Virtual Machines)
+    * **Local** (Files)
+* **Real-Time Code Generation**: Instantly preview the generated Terraform HCL code as you configure your resources.
+* **Live Syntax Highlighting**: View the generated code with syntax highlighting for better readability.
+* **Property Configuration**: Dynamic forms based on resource schemas allow you to easily configure properties (e.g., AMI ID, instance type, machine type).
+* **Copy & Download**: Quickly copy the generated code to your clipboard or download it as a `.tf` file.
+* **Dockerized**: Run the entire application in a lightweight Docker container.
 
 ## Getting Started
 
 ### Prerequisites
 
-*   **Docker** and **Docker Compose** installed on your machine.
-*   Alternatively, **Node.js** (v18+) and **npm** for local development.
+* **Docker** and **Docker Compose** installed on your machine.
+* Alternatively, **Node.js** (v18+) and **npm** for local development.
 
 ### Running with Docker Compose
 
@@ -30,7 +30,7 @@ The easiest way to run the application is using Docker Compose.
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/your-username/terraform-builder-webapp.git
+    git clone [https://github.com/your-username/terraform-builder-webapp.git](https://github.com/your-username/terraform-builder-webapp.git)
     cd terraform-builder-webapp
     ```
 
@@ -80,12 +80,12 @@ To run the application locally for development:
 
 ## Technologies Used
 
-*   **Frontend**: React, TypeScript, Vite
-*   **Styling**: Tailwind CSS
-*   **State Management**: Zustand
-*   **Icons**: Lucide React
-*   **Code Highlighting**: React Syntax Highlighter
-*   **Containerization**: Docker, Nginx
+* **Frontend**: React, TypeScript, Vite
+* **Styling**: Tailwind CSS
+* **State Management**: Zustand
+* **Icons**: Lucide React
+* **Code Highlighting**: React Syntax Highlighter
+* **Containerization**: Docker, Nginx
 
 ## Contributing
 
