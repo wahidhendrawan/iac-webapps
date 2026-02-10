@@ -1,6 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTerraformStore } from '../store';
-import type { ResourceSchema, Resource } from '../types';
 import { PROVIDERS } from '../data/providers';
 import { HelpCircle, Info, Settings } from 'lucide-react';
 import { ProviderSettings } from './ProviderSettings';
@@ -8,14 +7,16 @@ import { ProviderSettings } from './ProviderSettings';
 export function ConfigurationForm() {
   const { resources, selectedResourceId, updateResource } = useTerraformStore();
 
-  const selectedResource = useMemo(() =>
-    resources.find((r) => r.id === selectedResourceId) || null
-  , [resources, selectedResourceId]);
+  const selectedResource = useMemo(
+    () => resources.find((r) => r.id === selectedResourceId) || null,
+    [resources, selectedResourceId]
+  );
 
   const schema = useMemo(() => {
     if (!selectedResource) return null;
-    const provider = PROVIDERS.find(p => p.resources.some(r => r.type === selectedResource.type));
-    return provider?.resources.find(r => r.type === selectedResource.type) || null;
+    // Menggunakan pendekatan flatMap dari branch perf-optimize 
+    // untuk pencarian schema yang lebih ringkas
+    return PROVIDERS.flatMap((p) => p.resources).find((r) => r.type === selectedResource.type) || null;
   }, [selectedResource]);
 
   const handleChange = (name: string, value: any) => {
