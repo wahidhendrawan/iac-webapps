@@ -3,6 +3,7 @@ import { useTerraformStore } from '../store';
 import type { ResourceSchema, Resource } from '../types';
 import { PROVIDERS } from '../data/providers';
 import { HelpCircle, Info, Settings } from 'lucide-react';
+import { ProviderSettings } from './ProviderSettings';
 
 export function ConfigurationForm() {
   const { resources, selectedResourceId, updateResource } = useTerraformStore();
@@ -28,10 +29,14 @@ export function ConfigurationForm() {
   }, [selectedResourceId, resources]);
 
   const handleChange = (name: string, value: any) => {
-    if (selectedResourceId) {
+    if (selectedResourceId && selectedResourceId !== '__settings__') {
       updateResource(selectedResourceId, { properties: { ...selectedResource?.properties, [name]: value } });
     }
   };
+
+  if (selectedResourceId === '__settings__') {
+    return <ProviderSettings />;
+  }
 
   if (!selectedResource || !schema) {
     return (

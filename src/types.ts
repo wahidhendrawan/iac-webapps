@@ -39,3 +39,14 @@ export interface ProviderConfig {
   icon: string; // Lucide icon name or path
   color: string;
 }
+
+export interface ProviderSettings {
+  region?: string;
+  project?: string;
+  vsphere_server?: string;
+  user?: string;
+  password?: string;
+  allow_unverified_ssl?: boolean;
+}
+
+export type AllProviderSettings = Record<ProviderType, ProviderSettings>;
