@@ -7,10 +7,16 @@ import { Copy, Download, Code as CodeIcon } from 'lucide-react';
 import clsx from 'clsx';
 
 export function CodePreview() {
-  const { resources } = useTerraformStore();
+  // Menggabungkan resources dan providerSettings dari store
+  const { resources, providerSettings } = useTerraformStore();
   const [copied, setCopied] = useState(false);
 
-  const hcl = useMemo(() => generateHCL(resources), [resources]);
+  // Menggunakan useMemo untuk performa yang lebih baik,
+  // bergantung pada resources DAN providerSettings
+  const hcl = useMemo(() => 
+    generateHCL(resources, providerSettings), 
+    [resources, providerSettings]
+  );
 
   const handleCopy = () => {
     navigator.clipboard.writeText(hcl);
