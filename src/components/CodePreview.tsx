@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useTerraformStore } from '../store';
 import { generateHCL } from '../utils/generator';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -7,13 +7,16 @@ import { Copy, Download, Code as CodeIcon } from 'lucide-react';
 import clsx from 'clsx';
 
 export function CodePreview() {
+  // Menggabungkan resources dan providerSettings dari store
   const { resources, providerSettings } = useTerraformStore();
-  const [hcl, setHcl] = useState('');
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    setHcl(generateHCL(resources, providerSettings));
-  }, [resources, providerSettings]);
+  // Menggunakan useMemo untuk performa yang lebih baik,
+  // bergantung pada resources DAN providerSettings
+  const hcl = useMemo(() => 
+    generateHCL(resources, providerSettings), 
+    [resources, providerSettings]
+  );
 
   const handleCopy = () => {
     navigator.clipboard.writeText(hcl);
