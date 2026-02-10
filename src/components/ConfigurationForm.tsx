@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useTerraformStore } from '../store';
 import { PROVIDERS } from '../data/providers';
 import { HelpCircle, Info, Settings } from 'lucide-react';
+import { ProviderSettings } from './ProviderSettings';
 
 export function ConfigurationForm() {
   const { resources, selectedResourceId, updateResource } = useTerraformStore();
@@ -13,14 +14,20 @@ export function ConfigurationForm() {
 
   const schema = useMemo(() => {
     if (!selectedResource) return null;
+    // Menggunakan pendekatan flatMap dari branch perf-optimize 
+    // untuk pencarian schema yang lebih ringkas
     return PROVIDERS.flatMap((p) => p.resources).find((r) => r.type === selectedResource.type) || null;
   }, [selectedResource]);
 
   const handleChange = (name: string, value: any) => {
-    if (selectedResourceId) {
+    if (selectedResourceId && selectedResourceId !== '__settings__') {
       updateResource(selectedResourceId, { properties: { ...selectedResource?.properties, [name]: value } });
     }
   };
+
+  if (selectedResourceId === '__settings__') {
+    return <ProviderSettings />;
+  }
 
   if (!selectedResource || !schema) {
     return (
