@@ -6,6 +6,20 @@ export function generateHCL(resources: Resource[]): string {
   // Group resources by provider for provider blocks (simplified for now)
   const providers = new Set(resources.map(r => r.type.split('_')[0]));
 
+  // Add variables
+  if (providers.has('aws')) {
+    hcl += 'variable "aws_region" {\n  description = "AWS region"\n  type        = string\n  default     = "us-east-1"\n}\n\n';
+  }
+  if (providers.has('google')) {
+    hcl += 'variable "gcp_project_id" {\n  description = "Google Cloud Project ID"\n  type        = string\n}\n\n';
+    hcl += 'variable "gcp_region" {\n  description = "Google Cloud region"\n  type        = string\n  default     = "us-central1"\n}\n\n';
+  }
+  if (providers.has('vsphere')) {
+    hcl += 'variable "vsphere_user" {\n  description = "vSphere user"\n  type        = string\n}\n\n';
+    hcl += 'variable "vsphere_password" {\n  description = "vSphere password"\n  type        = string\n  sensitive   = true\n}\n\n';
+    hcl += 'variable "vsphere_server" {\n  description = "vSphere server"\n  type        = string\n}\n\n';
+  }
+
   hcl += 'terraform {\n  required_providers {\n';
   providers.forEach(p => {
     let source = '';
@@ -36,13 +50,13 @@ export function generateHCL(resources: Resource[]): string {
     }
     // Add default region for AWS/GCP if needed, simplified for now
     if (p === 'aws') {
-      hcl += '  region = "us-east-1"\n';
+      hcl += '  region = var.aws_region\n';
     }
     if (p === 'google') {
-        hcl += '  project = "my-project-id"\n  region  = "us-central1"\n';
+      hcl += '  project = var.gcp_project_id\n  region  = var.gcp_region\n';
     }
     if (p === 'vsphere') {
-        hcl += '  user           = "administrator@vsphere.local"\n  password       = "password"\n  vsphere_server = "vcenter.example.com"\n  allow_unverified_ssl = true\n';
+      hcl += '  user           = var.vsphere_user\n  password       = var.vsphere_password\n  vsphere_server = var.vsphere_server\n  allow_unverified_ssl = true\n';
     }
     hcl += '}\n\n';
   });
