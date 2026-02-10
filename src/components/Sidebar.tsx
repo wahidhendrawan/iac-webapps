@@ -1,7 +1,7 @@
 import React from 'react';
 import { PROVIDERS } from '../data/providers';
 import { useTerraformStore } from '../store';
-import { Box, Plus, Trash2, FolderOpen } from 'lucide-react';
+import { Box, Plus, Trash2, FolderOpen, Settings } from 'lucide-react';
 import clsx from 'clsx';
 import type { ResourceType } from '../types';
 
@@ -47,6 +47,25 @@ export function Sidebar() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Global Settings */}
+      <div className="px-4 py-3 border-b border-gray-200 bg-white shadow-sm z-10">
+        <button
+          onClick={() => selectResource('__settings__')}
+          className={clsx(
+            "flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-all w-full border",
+            selectedResourceId === '__settings__'
+              ? "bg-indigo-50 text-indigo-700 border-indigo-200 shadow-sm"
+              : "text-gray-600 hover:bg-gray-50 border-transparent"
+          )}
+        >
+          <Settings className={clsx(
+            "w-4 h-4",
+            selectedResourceId === '__settings__' ? "text-indigo-500" : "text-gray-400"
+          )} />
+          <span className="font-medium">Provider Settings</span>
+        </button>
       </div>
 
       {/* Resource Tree */}
