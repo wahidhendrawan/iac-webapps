@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useTerraformStore } from '../store';
 import { generateHCL } from '../utils/generator';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -8,12 +8,9 @@ import clsx from 'clsx';
 
 export function CodePreview() {
   const { resources } = useTerraformStore();
-  const [hcl, setHcl] = useState('');
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    setHcl(generateHCL(resources));
-  }, [resources]);
+  const hcl = useMemo(() => generateHCL(resources), [resources]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(hcl);
