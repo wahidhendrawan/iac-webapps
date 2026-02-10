@@ -7,13 +7,13 @@ import { Copy, Download, Code as CodeIcon } from 'lucide-react';
 import clsx from 'clsx';
 
 export function CodePreview() {
-  const { resources } = useTerraformStore();
+  const { resources, providerSettings } = useTerraformStore();
   const [hcl, setHcl] = useState('');
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    setHcl(generateHCL(resources));
-  }, [resources]);
+    setHcl(generateHCL(resources, providerSettings));
+  }, [resources, providerSettings]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(hcl);
