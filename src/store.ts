@@ -27,7 +27,11 @@ export const useTerraformStore = create<TerraformState>((set) => ({
       password: 'password',
       allow_unverified_ssl: true
     },
-    local: {}
+    local: {},
+    proxmox: {},
+    alibaba: {},
+    huawei: {},
+    sangfor: {}
   },
 
   addResource: (type: ResourceType) => {
