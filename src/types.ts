@@ -1,4 +1,4 @@
-export type ProviderType = 'aws' | 'azure' | 'google' | 'vsphere' | 'local';
+export type ProviderType = 'aws' | 'azure' | 'google' | 'vsphere' | 'proxmox' | 'alibaba' | 'huawei' | 'sangfor' | 'local';
 
 export type ResourceType =
   | 'aws_instance'
@@ -6,7 +6,16 @@ export type ResourceType =
   | 'azurerm_virtual_machine'
   | 'google_compute_instance'
   | 'vsphere_virtual_machine'
+  | 'proxmox_vm_qemu'
+  | 'alicloud_instance'
+  | 'huaweicloud_compute_instance'
+  | 'sangfor_vm'
   | 'local_file';
+
+export interface TerraformFile {
+  filename: string;
+  content: string;
+}
 
 export interface ResourceField {
   name: string;
@@ -47,6 +56,20 @@ export interface ProviderSettings {
   user?: string;
   password?: string;
   allow_unverified_ssl?: boolean;
+  // Proxmox
+  pm_api_url?: string;
+  pm_user?: string;
+  pm_password?: string;
+  pm_tls_insecure?: boolean;
+  // Alibaba
+  access_key?: string;
+  secret_key?: string;
+  // Huawei
+  domain_name?: string;
+  tenant_name?: string;
+  // Sangfor (Generic)
+  host?: string;
+  username?: string;
 }
 
 export type AllProviderSettings = Record<ProviderType, ProviderSettings>;

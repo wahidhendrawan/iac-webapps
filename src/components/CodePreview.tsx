@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react';
 import { useTerraformStore } from '../store';
-import { generateHCL } from '../utils/generator';
+import { generateHCL, generateTerraformFiles } from '../utils/generator';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Copy, Download, Code as CodeIcon } from 'lucide-react';
+import { Copy, Download, Code as CodeIcon, FolderArchive } from 'lucide-react';
 import clsx from 'clsx';
+import JSZip from 'jszip';
 
 export function CodePreview() {
   // Menggabungkan resources dan providerSettings dari store
@@ -36,6 +37,25 @@ export function CodePreview() {
     URL.revokeObjectURL(url);
   };
 
+  const handleDownloadZip = async () => {
+    const files = generateTerraformFiles(resources, providerSettings);
+    const zip = new JSZip();
+
+    files.forEach(file => {
+      zip.file(file.filename, file.content);
+    });
+
+    const content = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(content);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'terraform-project.zip';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="flex flex-col h-full bg-gray-900 border-l border-gray-700 overflow-hidden">
       <div className="px-4 py-3 bg-gray-800 border-b border-gray-700 flex items-center justify-between shadow-sm flex-shrink-0">
@@ -61,6 +81,13 @@ export function CodePreview() {
             title="Download .tf file"
           >
             <Download className="w-3.5 h-3.5" />
+          </button>
+           <button
+            onClick={handleDownloadZip}
+            className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+            title="Download Project (ZIP)"
+          >
+            <FolderArchive className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

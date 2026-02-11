@@ -90,6 +90,78 @@ export const PROVIDERS: Provider[] = [
     ]
   },
   {
+    id: 'proxmox',
+    name: 'Proxmox',
+    resources: [
+      {
+        type: 'proxmox_vm_qemu',
+        provider: 'proxmox',
+        name: 'VM (QEMU)',
+        description: 'Proxmox QEMU Virtual Machine',
+        fields: [
+          { name: 'name', label: 'VM Name', type: 'text', required: true },
+          { name: 'target_node', label: 'Target Node', type: 'text', required: true },
+          { name: 'vmid', label: 'VM ID', type: 'number', required: false, defaultValue: 0 },
+          { name: 'iso', label: 'ISO File', type: 'text', required: false, placeholder: 'local:iso/ubuntu.iso' },
+        ]
+      }
+    ]
+  },
+  {
+    id: 'alibaba',
+    name: 'Alibaba Cloud',
+    resources: [
+      {
+        type: 'alicloud_instance',
+        provider: 'alibaba',
+        name: 'ECS Instance',
+        description: 'Alibaba Cloud ECS Instance',
+        fields: [
+          { name: 'instance_name', label: 'Instance Name', type: 'text', required: true },
+          { name: 'instance_type', label: 'Instance Type', type: 'text', required: true, defaultValue: 'ecs.t5-lc1m1.small' },
+          { name: 'image_id', label: 'Image ID', type: 'text', required: true, defaultValue: 'ubuntu_18_04_64_20G_alibase_20190624.vhd' },
+          { name: 'vswitch_id', label: 'VSwitch ID', type: 'text', required: true },
+        ]
+      }
+    ]
+  },
+  {
+    id: 'huawei',
+    name: 'Huawei Cloud',
+    resources: [
+      {
+        type: 'huaweicloud_compute_instance',
+        provider: 'huawei',
+        name: 'ECS Instance',
+        description: 'Huawei Cloud ECS Instance',
+        fields: [
+          { name: 'name', label: 'Instance Name', type: 'text', required: true },
+          { name: 'flavor_id', label: 'Flavor ID', type: 'text', required: true, defaultValue: 's6.small.1' },
+          { name: 'image_id', label: 'Image ID', type: 'text', required: true },
+          { name: 'availability_zone', label: 'Availability Zone', type: 'text', required: true },
+        ]
+      }
+    ]
+  },
+  {
+    id: 'sangfor',
+    name: 'Sangfor (HCI)',
+    resources: [
+      {
+        type: 'sangfor_vm',
+        provider: 'sangfor',
+        name: 'Virtual Machine',
+        description: 'Sangfor HCI Virtual Machine',
+        fields: [
+          { name: 'name', label: 'VM Name', type: 'text', required: true },
+          { name: 'image_id', label: 'Image/Template ID', type: 'text', required: true },
+          { name: 'cpu_cores', label: 'CPU Cores', type: 'number', required: true, defaultValue: 2 },
+          { name: 'memory_mb', label: 'Memory (MB)', type: 'number', required: true, defaultValue: 4096 },
+        ]
+      }
+    ]
+  },
+  {
     id: 'local',
     name: 'Local',
     resources: [
