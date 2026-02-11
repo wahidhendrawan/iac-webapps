@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTerraformStore } from '../store';
 import { Globe, Settings, Server, Shield, User, Lock } from 'lucide-react';
 import type { ProviderType } from '../types';
