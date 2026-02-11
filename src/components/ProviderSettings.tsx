@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTerraformStore } from '../store';
 import { Globe, Settings, Server, Shield, User, Lock } from 'lucide-react';
 import type { ProviderType } from '../types';
@@ -41,6 +40,168 @@ export function ProviderSettings() {
                 placeholder="us-east-1"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
               />
+            </div>
+          </div>
+        </section>
+
+        {/* Proxmox Settings */}
+        <section>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2">
+            <Server className="w-5 h-5 text-orange-600" />
+            Proxmox Configuration
+          </h3>
+          <div className="grid gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">API URL</label>
+              <input
+                type="text"
+                value={providerSettings.proxmox?.pm_api_url || ''}
+                onChange={(e) => handleUpdate('proxmox', 'pm_api_url', e.target.value)}
+                placeholder="https://proxmox.example.com:8006/api2/json"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">User</label>
+                <input
+                  type="text"
+                  value={providerSettings.proxmox?.pm_user || ''}
+                  onChange={(e) => handleUpdate('proxmox', 'pm_user', e.target.value)}
+                  placeholder="root@pam"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input
+                  type="password"
+                  value={providerSettings.proxmox?.pm_password || ''}
+                  onChange={(e) => handleUpdate('proxmox', 'pm_password', e.target.value)}
+                  placeholder="password"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Alibaba Cloud Settings */}
+        <section>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2">
+            <Globe className="w-5 h-5 text-orange-400" />
+            Alibaba Cloud Configuration
+          </h3>
+          <div className="grid gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
+              <input
+                type="text"
+                value={providerSettings.alibaba?.region || ''}
+                onChange={(e) => handleUpdate('alibaba', 'region', e.target.value)}
+                placeholder="cn-hangzhou"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Access Key</label>
+                <input
+                  type="text"
+                  value={providerSettings.alibaba?.access_key || ''}
+                  onChange={(e) => handleUpdate('alibaba', 'access_key', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Secret Key</label>
+                <input
+                  type="password"
+                  value={providerSettings.alibaba?.secret_key || ''}
+                  onChange={(e) => handleUpdate('alibaba', 'secret_key', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Huawei Cloud Settings */}
+        <section>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2">
+            <Globe className="w-5 h-5 text-red-500" />
+            Huawei Cloud Configuration
+          </h3>
+          <div className="grid gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
+              <input
+                type="text"
+                value={providerSettings.huawei?.region || ''}
+                onChange={(e) => handleUpdate('huawei', 'region', e.target.value)}
+                placeholder="cn-north-4"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+              />
+            </div>
+             <div className="grid grid-cols-2 gap-4">
+               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Access Key</label>
+                <input
+                  type="text"
+                  value={providerSettings.huawei?.access_key || ''}
+                  onChange={(e) => handleUpdate('huawei', 'access_key', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Secret Key</label>
+                <input
+                  type="password"
+                  value={providerSettings.huawei?.secret_key || ''}
+                  onChange={(e) => handleUpdate('huawei', 'secret_key', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+         {/* Sangfor Settings */}
+        <section>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2">
+            <Server className="w-5 h-5 text-green-600" />
+            Sangfor HCI Configuration
+          </h3>
+          <div className="grid gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Host/IP</label>
+              <input
+                type="text"
+                value={providerSettings.sangfor?.host || ''}
+                onChange={(e) => handleUpdate('sangfor', 'host', e.target.value)}
+                placeholder="192.168.1.100"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+              />
+            </div>
+             <div className="grid grid-cols-2 gap-4">
+               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                <input
+                  type="text"
+                  value={providerSettings.sangfor?.username || ''}
+                  onChange={(e) => handleUpdate('sangfor', 'username', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input
+                  type="password"
+                  value={providerSettings.sangfor?.password || ''}
+                  onChange={(e) => handleUpdate('sangfor', 'password', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                />
+              </div>
             </div>
           </div>
         </section>
