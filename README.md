@@ -30,8 +30,7 @@ The easiest way to run the application is using Docker Compose.
 
 1.  Clone the repository:
     ```bash
-    git clone [https://github.com/your-username/terraform-builder-webapp.git](https://github.com/your-username/terraform-builder-webapp.git)
-    cd terraform-builder-webapp
+    git clone https://github.com/wahidhendrawan/iac-webapps.git
     ```
 
 2.  Start the application:
