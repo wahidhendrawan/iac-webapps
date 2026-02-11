@@ -61,12 +61,28 @@ export function About({ onClose }: AboutProps) {
               <div className="bg-emerald-50 p-6 rounded-xl border border-emerald-100">
                 <h3 className="flex items-center gap-2 text-xl font-semibold text-gray-900 mb-4">
                   <Server className="w-5 h-5 text-emerald-600" />
-                  On-Premise & Local
+                  More Providers
                 </h3>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
                     VMware vSphere
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
+                    Proxmox VE
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
+                    Alibaba Cloud
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
+                    Huawei Cloud
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
+                    Sangfor HCI
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
@@ -92,9 +108,9 @@ export function About({ onClose }: AboutProps) {
 
               <div className="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 transition-colors">
                 <Box className="w-8 h-8 text-indigo-500 mb-3" />
-                <h4 className="font-semibold text-gray-900 mb-2">Visual Management</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">All-in-One Project</h4>
                 <p className="text-sm text-gray-500">
-                  Manage your infrastructure components through an intuitive sidebar interface.
+                  Generate and download a complete Terraform project structure (ZIP) with one click.
                 </p>
               </div>
 

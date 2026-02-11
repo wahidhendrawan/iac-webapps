@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { v4 as uuidv4 } from 'uuid';
 import type { Resource, ResourceType, ResourceSchema, ProviderType, ProviderSettings, AllProviderSettings } from './types';
 import { PROVIDERS } from './data/providers';
 
@@ -59,7 +60,7 @@ export const useTerraformStore = create<TerraformState>((set) => ({
     });
 
     const newResource: Resource = {
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       type: type,
       name: `new_${type.split('_').pop() || 'resource'}`,
       properties: properties,
