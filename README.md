@@ -31,16 +31,17 @@ The easiest way to run the application is using Docker Compose.
 1.  Clone the repository:
     ```bash
     git clone https://github.com/wahidhendrawan/iac-webapps.git
+    cd iac-webapps
     ```
 
 2.  Start the application:
     ```bash
-    docker compose up -d
+    docker-compose up -d --build
     ```
 
 3.  Access the web interface at:
     ```
-    http://localhost:8080
+    http://[IP]:8088
     ```
 
 4.  To stop the application:
@@ -62,7 +63,7 @@ To run the application locally for development:
     npm run dev
     ```
 
-3.  Access the application at `http://localhost:5173`.
+3.  Access the application at `http://[IP]:5173`.
 
 4.  To build for production:
     ```bash
