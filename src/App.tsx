@@ -14,7 +14,7 @@ import { AICopilot } from './components/AICopilot';
 import { Layout as LayoutIcon, Settings as SettingsIcon } from 'lucide-react';
 
 function App() {
-  const { theme } = useTerraformStore();
+  const { theme, selectedResourceId } = useTerraformStore();
   const [showAbout, setShowAbout] = useState(false);
   const [showBackend, setShowBackend] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
@@ -97,14 +97,25 @@ function App() {
 
             <div className="flex-1 flex overflow-hidden">
                 {viewMode === 'form' ? (
-                    <ConfigurationForm />
+                    <>
+                        <ConfigurationForm />
+                        <div className="w-1/3 min-w-[300px] max-w-[500px] border-l border-gray-200 dark:border-slate-800 hidden xl:block h-full">
+                            <CodePreview onOpenSecurity={() => setShowSecurity(true)} />
+                        </div>
+                    </>
                 ) : (
-                    <VisualDesigner />
+                    <>
+                        <VisualDesigner />
+                        {selectedResourceId && (
+                            <div className="w-96 border-l border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl z-20 animate-in slide-in-from-right duration-300">
+                                <ConfigurationForm />
+                            </div>
+                        )}
+                        <div className="w-1/4 min-w-[250px] max-w-[400px] border-l border-gray-200 dark:border-slate-800 hidden 2xl:block h-full">
+                            <CodePreview onOpenSecurity={() => setShowSecurity(true)} />
+                        </div>
+                    </>
                 )}
-                
-                <div className="w-1/3 min-w-[300px] max-w-[500px] border-l border-gray-200 dark:border-slate-800 hidden xl:block h-full">
-                    <CodePreview onOpenSecurity={() => setShowSecurity(true)} />
-                </div>
             </div>
         </main>
       </div>
