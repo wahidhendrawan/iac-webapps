@@ -31,6 +31,8 @@ export const PROVIDERS: Provider[] = [
         fields: [
           { name: 'bucket', label: 'Bucket Name', type: 'text', required: true },
           { name: 'acl', label: 'ACL', type: 'select', required: false, options: ['private', 'public-read', 'public-read-write', 'authenticated-read'], defaultValue: 'private' },
+          { name: 'server_side_encryption_configuration', label: 'Enable Encryption', type: 'boolean', required: false, defaultValue: false, description: 'AES256 encryption at rest' },
+          { name: 'versioning', label: 'Enable Versioning', type: 'boolean', required: false, defaultValue: false },
         ]
       }
     ]

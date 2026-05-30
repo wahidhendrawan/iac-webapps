@@ -47,14 +47,17 @@ export function AICopilot() {
         setTimeout(() => {
             let response = "I'm not sure how to do that yet. Try asking me to add a specific resource like an AWS S3 bucket.";
             const lowerMsg = userMessage.toLowerCase();
+            // Simple keyword matching for simulation
             const mappings: Record<string, { type: ResourceType; name: string }> = {
-                's3': { type: 'aws_s3_bucket', name: 'S3 Bucket' },
-                'aws instance': { type: 'aws_instance', name: 'EC2 Instance' },
-                'ec2': { type: 'aws_instance', name: 'EC2 Instance' },
-                'azure vm': { type: 'azurerm_virtual_machine', name: 'Azure VM' },
-                'gcp instance': { type: 'google_compute_instance', name: 'GCP Instance' },
-                'proxmox': { type: 'proxmox_vm_qemu', name: 'Proxmox VM' },
-                'vpc module': { type: 'module', name: 'VPC Module' },
+              's3': { type: 'aws_s3_bucket', name: 'S3 Bucket' },
+              'aws instance': { type: 'aws_instance', name: 'EC2 Instance' },
+              'ec2': { type: 'aws_instance', name: 'EC2 Instance' },
+              'azure vm': { type: 'azurerm_virtual_machine', name: 'Azure VM' },
+              'gcp instance': { type: 'google_compute_instance', name: 'GCP Instance' },
+              'proxmox': { type: 'proxmox_vm_qemu', name: 'Proxmox VM' },
+              'vpc module': { type: 'module', name: 'VPC Module' },
+              'deployment': { type: 'kubernetes_deployment', name: 'K8s Deployment' },
+              'service': { type: 'kubernetes_service', name: 'K8s Service' },
             };
 
             for (const [key, resource] of Object.entries(mappings)) {
