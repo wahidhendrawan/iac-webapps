@@ -105,17 +105,38 @@ export function CodePreview({ onOpenSecurity }: CodePreviewProps) {
           </h2>
           
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-900/50 dark:bg-slate-950/50 border border-gray-700 dark:border-slate-800">
-                {validationErrors.length > 0 ? (
-                <>
-                    <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
-                    <span className="text-[10px] font-bold text-amber-500 uppercase">{validationErrors.length} Errors</span>
-                </>
-                ) : (
-                <>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                    <span className="text-[10px] font-bold text-emerald-500 uppercase">Valid</span>
-                </>
+            <div className="relative group/validation">
+                <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-900/50 dark:bg-slate-950/50 border border-gray-700 dark:border-slate-800 cursor-help transition-all hover:bg-gray-800">
+                    {validationErrors.length > 0 ? (
+                    <>
+                        <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
+                        <span className="text-[10px] font-bold text-amber-500 uppercase">{validationErrors.length} Errors</span>
+                    </>
+                    ) : (
+                    <>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                        <span className="text-[10px] font-bold text-emerald-500 uppercase">Valid</span>
+                    </>
+                    )}
+                </div>
+                
+                {validationErrors.length > 0 && (
+                    <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-gray-200 dark:border-slate-700 p-3 z-50 invisible group-hover/validation:visible animate-in fade-in slide-in-from-top-2 duration-200">
+                        <div className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest mb-2 border-b dark:border-slate-700 pb-1">Validation Errors</div>
+                        <ul className="space-y-2">
+                            {validationErrors.map((error, i) => {
+                                const res = resources.find(r => r.id === error.id);
+                                return (
+                                    <li key={i} className="text-[11px] text-gray-600 dark:text-slate-300 flex items-start gap-2">
+                                        <div className="w-1 h-1 bg-amber-500 rounded-full mt-1.5 shrink-0" />
+                                        <span>
+                                            <strong className="text-amber-600 dark:text-amber-400">{res?.name || 'Resource'}:</strong> {error.field} is required.
+                                        </span>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
                 )}
             </div>
 
