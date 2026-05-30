@@ -1,6 +1,6 @@
-# IaC WebApps (v1.0.0)
+# IaC WebApps (v1.7.0)
 
-A powerful, multi-tool visual platform for generating and managing Infrastructure as Code (IaC) configurations. Design your infrastructure visually and instantly generate production-ready code for **Terraform, OpenTofu, or Pulumi**.
+A powerful, multi-tool visual platform for generating and managing Infrastructure as Code (IaC) configurations. Design your infrastructure visually and instantly generate production-ready code for **Terraform, OpenTofu, Pulumi, or Helm Charts**.
 
 [![Project Status](https://img.shields.io/badge/status-active-emerald.svg)]()
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
@@ -8,17 +8,19 @@ A powerful, multi-tool visual platform for generating and managing Infrastructur
 
 ## 🚀 Key Features
 
-*   **Multi-Tool Support**: Seamlessly switch between **Terraform**, **OpenTofu**, and **Pulumi (TypeScript)**.
-*   **Visual Designer (Drag & Drop)**: Interactive canvas powered by **React Flow** for designing infrastructure topology with automated relationship mapping.
-*   **Architecture Templates**: Start fast with pre-configured blueprints (e.g., AWS Web Server, Azure VM).
-*   **Advanced Logic**: Support for **Terraform Modules**, **Remote State Backends** (S3, GCS, Azure), and **Resource Dependencies**.
-*   **DevOps & CI/CD**: Automatic generation of **GitHub Actions** and **GitLab CI** pipelines.
-*   **Real-Time Generation & Validation**: Live code preview with syntax highlighting and schema validation to catch errors early.
-*   **Full Project Export**: Download a complete, structured project (ZIP) ready for deployment.
+*   **Multi-Tool Support**: Seamlessly switch between **Terraform**, **OpenTofu**, **Pulumi (TypeScript)**, and **Helm Charts**.
+*   **DeepSeek AI Assistant**: Intelligent Copilot that can understand natural language and automatically add resources to your project using **DeepSeek-V3** or **GPT-4o**.
+*   **Real-Time Cost Estimator**: Track your infrastructure spending with a breakdown of hourly, daily, and monthly costs, featuring **real-time USD to IDR currency conversion**.
+*   **Visual Designer (Drag & Drop)**: Interactive canvas powered by **React Flow** with synchronized editing and automated relationship mapping.
+*   **Architecture Templates**: Start fast with pre-configured blueprints (e.g., 3-Tier Network, Hybrid Cloud, K8s Stack).
+*   **HCL Importer**: Reverse engineer existing Terraform `.tf` files into visual diagrams instantly.
+*   **DevSecOps Security Scanner**: Real-time static analysis to detect vulnerabilities (e.g., public S3 buckets, open SSH ports) before deployment.
+*   **Advanced Logic**: Support for Modules, Remote State Backends, and Resource Dependencies.
 
 ## 🛠 Supported Providers
 
 *   **Public Cloud**: AWS, Azure, Google Cloud, Alibaba Cloud, Huawei Cloud.
+*   **Container/K8s**: Kubernetes (Deployments, Services, Helm).
 *   **On-Premise/Hybrid**: VMware vSphere, Proxmox VE, Sangfor HCI.
 *   **Local**: Local File System management.
 
@@ -27,11 +29,9 @@ A powerful, multi-tool visual platform for generating and managing Infrastructur
 ### Prerequisites
 
 *   **Docker** and **Docker Compose**.
-*   Alternatively, **Node.js (v20+)** and **npm** for development.
+*   Alternatively, **Node.js (v20+)** and **npm**.
 
 ### Running with Docker
-
-The fastest way to experience IaC WebApps:
 
 1.  **Clone & Enter**:
     ```bash
@@ -46,19 +46,14 @@ The fastest way to experience IaC WebApps:
 
 3.  **Access**: Open [http://localhost:8088](http://localhost:8088) in your browser.
 
-### Local Development
-
-1.  Install dependencies: `npm install`
-2.  Start dev server: `npm run dev`
-3.  Build for production: `npm run build`
-
 ## 🎨 Technology Stack
 
 *   **Framework**: React 19, TypeScript
-*   **Design**: Tailwind CSS, Framer Motion
 *   **Diagramming**: @xyflow/react (React Flow)
-*   **State**: Zustand
-*   **Deployment**: Docker, Nginx
+*   **State Management**: Zustand (with Persistence)
+*   **AI Integration**: DeepSeek API & OpenAI API
+*   **Styling**: Tailwind CSS (Dark Mode supported)
+*   **Currency API**: Open Exchange Rates
 
 ## 📜 License
 
