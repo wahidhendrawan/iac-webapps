@@ -33,6 +33,24 @@ export const ARCHITECTURE_TEMPLATES: ArchitectureTemplate[] = [
     ],
   },
   {
+    id: 'aws-three-tier',
+    name: 'AWS Three-Tier Network',
+    description: 'VPC with Public and Private subnets using the official VPC module.',
+    resources: [
+      {
+        type: 'module',
+        name: 'vpc',
+        properties: {
+          name: 'production-vpc',
+          cidr: '10.0.0.0/16',
+          azs: '["us-east-1a", "us-east-1b"]',
+          private_subnets: '["10.0.1.0/24", "10.0.2.0/24"]',
+          public_subnets: '["10.0.101.0/24", "10.0.102.0/24"]',
+        }
+      }
+    ]
+  },
+  {
     id: 'azure-basic-vm',
     name: 'Azure Virtual Machine',
     description: 'Standard Azure VM with basic configuration.',
@@ -65,6 +83,55 @@ export const ARCHITECTURE_TEMPLATES: ArchitectureTemplate[] = [
       },
     ],
   },
+  {
+    id: 'k8s-app-stack',
+    name: 'Kubernetes App Stack',
+    description: 'Deployment with multiple replicas and a LoadBalancer service.',
+    resources: [
+      {
+        type: 'kubernetes_deployment',
+        name: 'frontend',
+        properties: {
+          name: 'web-frontend',
+          replicas: 3,
+          image: 'nginx:alpine',
+        }
+      },
+      {
+        type: 'kubernetes_service',
+        name: 'frontend_svc',
+        properties: {
+          name: 'web-service',
+          type: 'LoadBalancer',
+          app_label: 'web-frontend',
+        }
+      }
+    ]
+  },
+  {
+    id: 'hybrid-cloud',
+    name: 'Hybrid Cloud (AWS + Proxmox)',
+    description: 'Connect on-premise Proxmox VM to AWS S3 storage.',
+    resources: [
+      {
+        type: 'proxmox_vm_qemu',
+        name: 'local_node',
+        properties: {
+          name: 'pve-worker-01',
+          target_node: 'pve',
+          iso: 'local:iso/ubuntu-server.iso'
+        }
+      },
+      {
+        type: 'aws_s3_bucket',
+        name: 'cloud_backup',
+        properties: {
+          bucket: 'hybrid-backup-store',
+          acl: 'private'
+        }
+      }
+    ]
+  }
 ];
 
 export function prepareTemplateResources(template: ArchitectureTemplate): Resource[] {

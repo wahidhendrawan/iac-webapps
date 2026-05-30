@@ -68,7 +68,7 @@ export function ConfigurationForm() {
             </label>
             
             {field.description && (
-              <p className="mb-2 text-xs text-gray-500 dark:text-slate-400 leading-relaxed">
+              <p className="mb-2 text-[11px] text-gray-500 dark:text-slate-400 leading-relaxed italic border-l-2 border-indigo-100 dark:border-indigo-900/50 pl-2">
                 {field.description}
               </p>
             )}
