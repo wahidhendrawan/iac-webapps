@@ -94,6 +94,13 @@ export interface DevOpsSettings {
 
 export type IaCTool = 'terraform' | 'opentofu' | 'pulumi';
 
+export type AIProvider = 'simulation' | 'deepseek' | 'openai';
+
+export interface AISettings {
+  provider: AIProvider;
+  apiKey: string;
+}
+
 export type Severity = 'low' | 'medium' | 'high' | 'critical';
 
 export interface SecurityFinding {

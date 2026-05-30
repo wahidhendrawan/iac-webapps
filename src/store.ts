@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
-import type { Resource, ResourceType, ResourceSchema, ProviderType, ProviderSettings, AllProviderSettings, BackendConfig, DevOpsSettings, IaCTool } from './types';
+import type { Resource, ResourceType, ResourceSchema, ProviderType, ProviderSettings, AllProviderSettings, BackendConfig, DevOpsSettings, IaCTool, AISettings } from './types';
 import { PROVIDERS } from './data/providers';
 
 import { ARCHITECTURE_TEMPLATES, prepareTemplateResources } from './data/templates';
@@ -14,6 +14,7 @@ interface TerraformState {
   devopsSettings: DevOpsSettings;
   iacTool: IaCTool;
   theme: 'light' | 'dark';
+  aiSettings: AISettings;
 
   addResource: (type: ResourceType) => void;
   updateResource: (id: string, updates: Partial<Resource>) => void;
@@ -26,6 +27,7 @@ interface TerraformState {
   updateDevOpsSettings: (settings: Partial<DevOpsSettings>) => void;
   setIaCTool: (tool: IaCTool) => void;
   toggleTheme: () => void;
+  updateAISettings: (settings: Partial<AISettings>) => void;
 }
 
 export const useTerraformStore = create<TerraformState>()(
@@ -56,6 +58,10 @@ export const useTerraformStore = create<TerraformState>()(
       },
       iacTool: 'terraform',
       theme: 'light',
+      aiSettings: {
+        provider: 'simulation',
+        apiKey: ''
+      },
 
       addResource: (type: ResourceType) => {
         let schema: ResourceSchema | undefined;
@@ -155,6 +161,12 @@ export const useTerraformStore = create<TerraformState>()(
 
       toggleTheme: () => {
         set((state) => ({ theme: state.theme === 'light' ? 'dark' : 'light' }));
+      },
+
+      updateAISettings: (settings) => {
+        set((state) => ({
+          aiSettings: { ...state.aiSettings, ...settings }
+        }));
       },
     }),
     {

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTerraformStore } from '../store';
-import { Bot, Send, X, Sparkles, Loader2 } from 'lucide-react';
+import { Bot, Send, X, Sparkles, Loader2, Settings } from 'lucide-react';
+import { AISettings } from './AISettings';
 import type { ResourceType } from '../types';
 
 interface Message {
@@ -10,12 +11,13 @@ interface Message {
 
 export function AICopilot() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     { role: 'assistant', content: 'Hi! I am your IaC Copilot. How can I help you design your infrastructure today?' }
   ]);
   const [isTyping, setIsTyping] = useState(false);
-  const { addResource } = useTerraformStore();
+  const { addResource, aiSettings } = useTerraformStore();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,33 +34,89 @@ export function AICopilot() {
     setInput('');
     setIsTyping(true);
 
-    // Simulate AI Processing
-    setTimeout(() => {
-      let response = "I'm not sure how to do that yet. Try asking me to add a specific resource like an AWS S3 bucket.";
-      const lowerMsg = userMessage.toLowerCase();
+    if (aiSettings.provider === 'simulation') {
+        // ... (Simulasi logic yang sudah ada)
+        setTimeout(() => {
+            let response = "I'm not sure how to do that yet. Try asking me to add a specific resource like an AWS S3 bucket.";
+            const lowerMsg = userMessage.toLowerCase();
+            const mappings: Record<string, { type: ResourceType; name: string }> = {
+                's3': { type: 'aws_s3_bucket', name: 'S3 Bucket' },
+                'aws instance': { type: 'aws_instance', name: 'EC2 Instance' },
+                'ec2': { type: 'aws_instance', name: 'EC2 Instance' },
+                'azure vm': { type: 'azurerm_virtual_machine', name: 'Azure VM' },
+                'gcp instance': { type: 'google_compute_instance', name: 'GCP Instance' },
+                'proxmox': { type: 'proxmox_vm_qemu', name: 'Proxmox VM' },
+                'vpc module': { type: 'module', name: 'VPC Module' },
+            };
 
-      // Simple keyword matching for simulation
-      const mappings: Record<string, { type: ResourceType; name: string }> = {
-        's3': { type: 'aws_s3_bucket', name: 'S3 Bucket' },
-        'aws instance': { type: 'aws_instance', name: 'EC2 Instance' },
-        'ec2': { type: 'aws_instance', name: 'EC2 Instance' },
-        'azure vm': { type: 'azurerm_virtual_machine', name: 'Azure VM' },
-        'gcp instance': { type: 'google_compute_instance', name: 'GCP Instance' },
-        'proxmox': { type: 'proxmox_vm_qemu', name: 'Proxmox VM' },
-        'vpc module': { type: 'module', name: 'VPC Module' },
-      };
+            for (const [key, resource] of Object.entries(mappings)) {
+                if (lowerMsg.includes(key)) {
+                addResource(resource.type);
+                response = `Sure! I've added a new ${resource.name} to your project. You can now see it in the sidebar and visual designer.`;
+                break;
+                }
+            }
+            setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+            setIsTyping(false);
+        }, 1000);
+        return;
+    }
 
-      for (const [key, resource] of Object.entries(mappings)) {
-        if (lowerMsg.includes(key)) {
-          addResource(resource.type);
-          response = `Sure! I've added a new ${resource.name} to your project. You can now see it in the sidebar and visual designer.`;
-          break;
+    // REAL API LOGIC
+    try {
+        const endpoint = aiSettings.provider === 'deepseek' 
+            ? 'https://api.deepseek.com/chat/completions' 
+            : 'https://api.openai.com/v1/chat/completions';
+        
+        const systemPrompt = `You are an Infrastructure as Code expert. 
+        You help users design cloud architecture. 
+        Current supported tools: Terraform, OpenTofu, Pulumi.
+        Current supported resources: aws_instance, aws_s3_bucket, azurerm_virtual_machine, google_compute_instance, vsphere_virtual_machine, proxmox_vm_qemu, alicloud_instance, huaweicloud_compute_instance, sangfor_vm, local_file, module.
+        
+        If the user asks to add a resource, start your response with "[ACTION:ADD_RESOURCE:type]" where type is one of the supported resource types above.
+        Then provide a brief explanation. 
+        Be concise and professional.`;
+
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${aiSettings.apiKey}`
+            },
+            body: JSON.stringify({
+                model: aiSettings.provider === 'deepseek' ? 'deepseek-chat' : 'gpt-4o',
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    ...messages.map(m => ({ role: m.role, content: m.content })),
+                    { role: 'user', content: userMessage }
+                ],
+                temperature: 0.7
+            })
+        });
+
+        if (!response.ok) throw new Error('API request failed');
+        
+        const data = await response.json();
+        let aiContent = data.choices[0].message.content;
+
+        // Process potential actions
+        if (aiContent.includes('[ACTION:ADD_RESOURCE:')) {
+            const match = aiContent.match(/\[ACTION:ADD_RESOURCE:(.*?)\]/);
+            if (match && match[1]) {
+                addResource(match[1] as ResourceType);
+                aiContent = aiContent.replace(/\[ACTION:ADD_RESOURCE:.*?\]/, '').trim();
+            }
         }
-      }
 
-      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
-      setIsTyping(false);
-    }, 1500);
+        setMessages(prev => [...prev, { role: 'assistant', content: aiContent }]);
+    } catch (error) {
+        setMessages(prev => [...prev, { 
+            role: 'assistant', 
+            content: "Sorry, I couldn't connect to the AI provider. Please check your API key in settings." 
+        }]);
+    } finally {
+        setIsTyping(false);
+    }
   };
 
   return (
@@ -87,7 +145,14 @@ export function AICopilot() {
               <Sparkles className="w-5 h-5" />
               <h3 className="font-bold">IaC Copilot</h3>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
+               <button 
+                 onClick={() => setShowSettings(true)}
+                 className="p-1 hover:bg-white/20 rounded-lg transition-colors text-white"
+                 title="AI Settings"
+               >
+                 <Settings className="w-4 h-4" />
+               </button>
                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                <span className="text-[10px] text-indigo-100 font-bold uppercase">Online</span>
             </div>
@@ -138,6 +203,12 @@ export function AICopilot() {
               Copilot can add resources based on your requests.
             </p>
           </div>
+        </div>
+      )}
+      {/* AISettings Modal Overlay */}
+      {showSettings && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <AISettings onClose={() => setShowSettings(false)} />
         </div>
       )}
     </>
