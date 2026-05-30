@@ -3,6 +3,7 @@ import { useTerraformStore } from '../store';
 import { generateHCL, generateTerraformFiles, validateResources } from '../utils/generator';
 import { scanResources } from '../utils/securityScanner';
 import { generatePulumiFiles } from '../utils/pulumiGenerator';
+import { generateHelmFiles } from '../utils/helmGenerator';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Copy, Download, Code as CodeIcon, FolderArchive, AlertCircle, CheckCircle2, ShieldAlert, ShieldCheck } from 'lucide-react';
@@ -23,6 +24,9 @@ export function CodePreview({ onOpenSecurity }: CodePreviewProps) {
     if (iacTool === 'pulumi') {
         return generatePulumiFiles(resources);
     }
+    if (iacTool === 'helm') {
+        return generateHelmFiles(resources);
+    }
     // For terraform and opentofu, it's the same files but different README/CI
     return generateTerraformFiles(resources, providerSettings, backend, devopsSettings, iacTool);
   }, [resources, providerSettings, backend, devopsSettings, iacTool]);
@@ -32,10 +36,13 @@ export function CodePreview({ onOpenSecurity }: CodePreviewProps) {
     if (iacTool === 'pulumi') {
         return files.find(f => f.filename === 'index.ts')?.content || '';
     }
+    if (iacTool === 'helm') {
+        return files.find(f => f.filename === 'values.yaml')?.content || '';
+    }
     return generateHCL(resources, providerSettings, backend, devopsSettings, iacTool);
   }, [resources, providerSettings, backend, devopsSettings, iacTool, files]);
 
-  const language = iacTool === 'pulumi' ? 'typescript' : 'hcl';
+  const language = iacTool === 'pulumi' ? 'typescript' : (iacTool === 'helm' ? 'yaml' : 'hcl');
 
   const validationErrors = useMemo(() => validateResources(resources), [resources]);
   const securityFindings = useMemo(() => scanResources(resources), [resources]);
@@ -55,7 +62,10 @@ export function CodePreview({ onOpenSecurity }: CodePreviewProps) {
   };
 
   const handleDownload = () => {
-    const filename = iacTool === 'pulumi' ? 'index.ts' : 'main.tf';
+    let filename = 'main.tf';
+    if (iacTool === 'pulumi') filename = 'index.ts';
+    else if (iacTool === 'helm') filename = 'values.yaml';
+
     const blob = new Blob([code], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

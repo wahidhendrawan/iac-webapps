@@ -197,5 +197,33 @@ export const PROVIDERS: Provider[] = [
         ]
       }
     ]
+  },
+  {
+    id: 'google',
+    name: 'Kubernetes',
+    resources: [
+      {
+        type: 'kubernetes_deployment',
+        provider: 'google',
+        name: 'K8s Deployment',
+        description: 'Standard Kubernetes Deployment',
+        fields: [
+          { name: 'name', label: 'Deployment Name', type: 'text', required: true, defaultValue: 'my-app' },
+          { name: 'replicas', label: 'Replicas', type: 'number', required: true, defaultValue: 3 },
+          { name: 'image', label: 'Image', type: 'text', required: true, defaultValue: 'nginx:latest' },
+        ]
+      },
+      {
+        type: 'kubernetes_service',
+        provider: 'google',
+        name: 'K8s Service',
+        description: 'Kubernetes Service',
+        fields: [
+          { name: 'name', label: 'Service Name', type: 'text', required: true, defaultValue: 'my-service' },
+          { name: 'type', label: 'Type', type: 'select', required: true, options: ['ClusterIP', 'NodePort', 'LoadBalancer'], defaultValue: 'ClusterIP' },
+          { name: 'app_label', label: 'Selector Label', type: 'text', required: true, defaultValue: 'my-app' },
+        ]
+      }
+    ]
   }
 ];
