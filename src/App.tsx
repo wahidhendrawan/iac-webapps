@@ -8,6 +8,7 @@ import { TemplateGallery } from './components/TemplateGallery';
 import { VisualDesigner } from './components/VisualDesigner';
 import { DevOpsSettings } from './components/DevOpsSettings';
 import { About } from './components/About';
+import { SecurityReport } from './components/SecurityReport';
 import { Layout as LayoutIcon, Settings as SettingsIcon } from 'lucide-react';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
   const [showBackend, setShowBackend] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
   const [showDevOps, setShowDevOps] = useState(false);
+  const [showSecurity, setShowSecurity] = useState(false);
   const [viewMode, setViewMode] = useState<'form' | 'visual'>('visual');
 
   return (
@@ -47,6 +49,12 @@ function App() {
       {showDevOps && (
         <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <DevOpsSettings onClose={() => setShowDevOps(false)} />
+        </div>
+      )}
+
+      {showSecurity && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <SecurityReport onClose={() => setShowSecurity(false)} />
         </div>
       )}
 
@@ -84,7 +92,7 @@ function App() {
                 )}
                 
                 <div className="w-1/3 min-w-[300px] max-w-[500px] border-l border-gray-200 hidden xl:block h-full">
-                    <CodePreview />
+                    <CodePreview onOpenSecurity={() => setShowSecurity(true)} />
                 </div>
             </div>
         </main>

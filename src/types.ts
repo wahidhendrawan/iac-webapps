@@ -93,3 +93,13 @@ export interface DevOpsSettings {
 }
 
 export type IaCTool = 'terraform' | 'opentofu' | 'pulumi';
+
+export type Severity = 'low' | 'medium' | 'high' | 'critical';
+
+export interface SecurityFinding {
+  ruleId: string;
+  resourceId: string;
+  severity: Severity;
+  message: string;
+  remediation: string;
+}
