@@ -78,40 +78,40 @@ export function About({ onClose }: AboutProps) {
             </h3>
 
             <div className="grid md:grid-cols-3 gap-6 mb-12">
-              <div className="p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all">
+              <div className="p-4 border border-gray-100 dark:border-slate-800 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all">
                 <Network className="w-8 h-8 text-indigo-500 mb-3" />
-                <h4 className="font-semibold text-gray-900 mb-2">Visual Designer</h4>
-                <p className="text-xs text-gray-500">
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Visual Designer</h4>
+                <p className="text-xs text-gray-500 dark:text-slate-400">
                   Drag & Drop interface to design infrastructure topology with automated relationship mapping.
                 </p>
               </div>
 
-              <div className="p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all">
+              <div className="p-4 border border-gray-100 dark:border-slate-800 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all">
                 <Rocket className="w-8 h-8 text-emerald-500 mb-3" />
-                <h4 className="font-semibold text-gray-900 mb-2">DevOps Ready</h4>
-                <p className="text-xs text-gray-500">
-                  Automated CI/CD pipeline generation for GitHub Actions and GitLab CI.
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Multi-Tool & DevOps</h4>
+                <p className="text-xs text-gray-500 dark:text-slate-400">
+                  Generate code for Terraform, OpenTofu, Pulumi, and Helm Charts with CI/CD automation.
                 </p>
               </div>
 
-              <div className="p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all">
+              <div className="p-4 border border-gray-100 dark:border-slate-800 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all">
                 <Database className="w-8 h-8 text-amber-500 mb-3" />
-                <h4 className="font-semibold text-gray-900 mb-2">State Management</h4>
-                <p className="text-xs text-gray-500">
-                  Built-in Remote Backend configuration for S3, GCS, and Azure state storage.
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">HCL Importer</h4>
+                <p className="text-xs text-gray-500 dark:text-slate-400">
+                  Reverse engineer existing Terraform files into visual diagrams instantly.
                 </p>
               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-2xl p-8 text-center shadow-inner">
-              <p className="text-slate-400 text-xs uppercase tracking-widest font-bold mb-2">Version 1.0.0</p>
+            <div className="bg-slate-900 rounded-2xl p-8 text-center shadow-inner border border-white/5">
+              <p className="text-slate-400 text-xs uppercase tracking-widest font-bold mb-2">Version 1.4.0</p>
               <div className="text-white text-lg">
                 Created by{" "}
                 <a 
                   href="https://wahidhendrawan.onrender.com/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-indigo-400 hover:text-indigo-300 font-bold underline underline-offset-4 decoration-2 transition-colors"
+                  className="text-indigo-400 hover:text-indigo-300 font-bold transition-colors"
                 >
                   Wahid Hendrawan
                 </a>
