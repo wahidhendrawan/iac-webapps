@@ -1,18 +1,28 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
-import type { Resource, ResourceType, ResourceSchema, ProviderType, ProviderSettings, AllProviderSettings } from './types';
+import type { Resource, ResourceType, ResourceSchema, ProviderType, ProviderSettings, AllProviderSettings, BackendConfig, DevOpsSettings, IaCTool } from './types';
 import { PROVIDERS } from './data/providers';
+
+import { ARCHITECTURE_TEMPLATES, prepareTemplateResources } from './data/templates';
 
 interface TerraformState {
   resources: Resource[];
   selectedResourceId: string | null;
   providerSettings: AllProviderSettings;
+  backend: BackendConfig | null;
+  devopsSettings: DevOpsSettings;
+  iacTool: IaCTool;
 
   addResource: (type: ResourceType) => void;
   updateResource: (id: string, updates: Partial<Resource>) => void;
   removeResource: (id: string) => void;
   selectResource: (id: string | null) => void;
   updateProviderSettings: (provider: ProviderType, settings: Partial<ProviderSettings>) => void;
+  updateBackend: (backend: BackendConfig | null) => void;
+  loadTemplate: (templateId: string) => void;
+  updateResourcePosition: (id: string, position: { x: number; y: number }) => void;
+  updateDevOpsSettings: (settings: Partial<DevOpsSettings>) => void;
+  setIaCTool: (tool: IaCTool) => void;
 }
 
 export const useTerraformStore = create<TerraformState>((set) => ({
@@ -34,6 +44,12 @@ export const useTerraformStore = create<TerraformState>((set) => ({
     huawei: {},
     sangfor: {}
   },
+  backend: null,
+  devopsSettings: {
+    ciCdProvider: 'none',
+    branchName: 'main'
+  },
+  iacTool: 'terraform',
 
   addResource: (type: ResourceType) => {
     // Find schema across all providers
@@ -98,5 +114,38 @@ export const useTerraformStore = create<TerraformState>((set) => ({
         [provider]: { ...state.providerSettings[provider], ...settings }
       }
     }));
+  },
+
+  updateBackend: (backend) => {
+    set({ backend });
+  },
+
+  loadTemplate: (templateId) => {
+    const template = ARCHITECTURE_TEMPLATES.find(t => t.id === templateId);
+    if (!template) return;
+
+    const newResources = prepareTemplateResources(template);
+    set((state) => ({
+      resources: [...state.resources, ...newResources],
+      selectedResourceId: newResources[0]?.id || null,
+    }));
+  },
+
+  updateResourcePosition: (id, position) => {
+    set((state) => ({
+      resources: state.resources.map((res) =>
+        res.id === id ? { ...res, position } : res
+      ),
+    }));
+  },
+
+  updateDevOpsSettings: (settings) => {
+    set((state) => ({
+      devopsSettings: { ...state.devopsSettings, ...settings }
+    }));
+  },
+
+  setIaCTool: (tool) => {
+    set({ iacTool: tool });
   },
 }));

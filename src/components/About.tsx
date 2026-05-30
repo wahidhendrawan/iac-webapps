@@ -1,4 +1,4 @@
-import { Cloud, Server, Code, Layers, Globe, Box, Info } from 'lucide-react';
+import { Cloud, Server, Layers, Globe, Network, Rocket, Database } from 'lucide-react';
 
 interface AboutProps {
   onClose: () => void;
@@ -6,7 +6,7 @@ interface AboutProps {
 
 export function About({ onClose }: AboutProps) {
   return (
-    <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-y-auto relative animate-in fade-in zoom-in duration-200 scrollbar-hide">
+    <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-y-auto relative animate-in fade-in zoom-in duration-200 scrollbar-hide">
       <button
         onClick={onClose}
         className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-2 z-10"
@@ -23,37 +23,36 @@ export function About({ onClose }: AboutProps) {
               <Cloud className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h2 className="text-3xl font-bold text-gray-900">About TerraForm Builder</h2>
-              <p className="text-lg text-gray-500">Visual Infrastructure as Code Generator</p>
+              <h2 className="text-3xl font-bold text-gray-900">About IaC WebApps</h2>
+              <p className="text-lg text-gray-500">The Ultimate Multi-IaC Visual Platform</p>
             </div>
           </div>
 
           <div className="prose prose-indigo max-w-none">
             <p className="text-gray-600 text-lg leading-relaxed mb-8">
-              TerraForm Builder is a modern, open-source web application designed to simplify the creation of
-              Infrastructure as Code (IaC) configurations. Whether you're managing multi-cloud environments
-              or on-premise infrastructure, our tool provides an intuitive visual interface to generate
-              syntactically correct Terraform code instantly.
+              IaC WebApps is an advanced, multi-tool visual platform designed to revolutionize how you manage 
+              Infrastructure as Code. From visual design to automated deployment, we provide the tools to build 
+              modern infrastructure across any provider using <strong>Terraform, OpenTofu, or Pulumi</strong>.
             </p>
 
             <div className="grid md:grid-cols-2 gap-8 mb-12">
               <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
                 <h3 className="flex items-center gap-2 text-xl font-semibold text-gray-900 mb-4">
                   <Globe className="w-5 h-5 text-indigo-600" />
-                  Multi-Cloud Support
+                  Multi-Tool Support
                 </h3>
                 <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></span>
-                    AWS (Amazon Web Services)
+                  <li className="flex items-center gap-2 font-medium">
+                    <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
+                    Terraform (HCL)
                   </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></span>
-                    Microsoft Azure
+                  <li className="flex items-center gap-2 font-medium">
+                    <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
+                    OpenTofu (The Open Source Fork)
                   </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full"></span>
-                    Google Cloud Platform (GCP)
+                  <li className="flex items-center gap-2 font-medium">
+                    <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></span>
+                    Pulumi (TypeScript/Software)
                   </li>
                 </ul>
               </div>
@@ -61,71 +60,68 @@ export function About({ onClose }: AboutProps) {
               <div className="bg-emerald-50 p-6 rounded-xl border border-emerald-100">
                 <h3 className="flex items-center gap-2 text-xl font-semibold text-gray-900 mb-4">
                   <Server className="w-5 h-5 text-emerald-600" />
-                  More Providers
+                  Cloud & Infrastructure
                 </h3>
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-                    VMware vSphere
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-                    Proxmox VE
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-                    Alibaba Cloud
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-                    Huawei Cloud
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-                    Sangfor HCI
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-                    Local File System
-                  </li>
-                </ul>
+                <p className="text-sm text-gray-500 mb-2">Native support for all major providers:</p>
+                <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
+                  <span className="bg-white/50 px-2 py-1 rounded">AWS / Azure / GCP</span>
+                  <span className="bg-white/50 px-2 py-1 rounded">VMware / Proxmox</span>
+                  <span className="bg-white/50 px-2 py-1 rounded">Alibaba / Huawei</span>
+                  <span className="bg-white/50 px-2 py-1 rounded">Sangfor HCI / Local</span>
+                </div>
               </div>
             </div>
 
             <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
               <Layers className="w-6 h-6 text-gray-400" />
-              Key Features
+              Advanced Ecosystem
             </h3>
 
             <div className="grid md:grid-cols-3 gap-6 mb-12">
-              <div className="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 transition-colors">
-                <Code className="w-8 h-8 text-indigo-500 mb-3" />
-                <h4 className="font-semibold text-gray-900 mb-2">Real-time Generation</h4>
-                <p className="text-sm text-gray-500">
-                  Instantly see the Terraform HCL code update as you configure resources.
+              <div className="p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all">
+                <Network className="w-8 h-8 text-indigo-500 mb-3" />
+                <h4 className="font-semibold text-gray-900 mb-2">Visual Designer</h4>
+                <p className="text-xs text-gray-500">
+                  Drag & Drop interface to design infrastructure topology with automated relationship mapping.
                 </p>
               </div>
 
-              <div className="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 transition-colors">
-                <Box className="w-8 h-8 text-indigo-500 mb-3" />
-                <h4 className="font-semibold text-gray-900 mb-2">All-in-One Project</h4>
-                <p className="text-sm text-gray-500">
-                  Generate and download a complete Terraform project structure (ZIP) with one click.
+              <div className="p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all">
+                <Rocket className="w-8 h-8 text-emerald-500 mb-3" />
+                <h4 className="font-semibold text-gray-900 mb-2">DevOps Ready</h4>
+                <p className="text-xs text-gray-500">
+                  Automated CI/CD pipeline generation for GitHub Actions and GitLab CI.
                 </p>
               </div>
 
-              <div className="p-4 border border-gray-200 rounded-lg hover:border-indigo-300 transition-colors">
-                <Info className="w-8 h-8 text-indigo-500 mb-3" />
-                <h4 className="font-semibold text-gray-900 mb-2">Schema Validation</h4>
-                <p className="text-sm text-gray-500">
-                  Built-in schemas ensure you provide the correct properties for each resource.
+              <div className="p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-all">
+                <Database className="w-8 h-8 text-amber-500 mb-3" />
+                <h4 className="font-semibold text-gray-900 mb-2">State Management</h4>
+                <p className="text-xs text-gray-500">
+                  Built-in Remote Backend configuration for S3, GCS, and Azure state storage.
                 </p>
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-xl p-6 text-center text-sm text-gray-500">
-              <p>Built with React, TypeScript, Vite, and Docker.</p>
-              <p className="mt-1">Version 1.0.0</p>
+            <div className="bg-slate-900 rounded-2xl p-8 text-center shadow-inner">
+              <p className="text-slate-400 text-xs uppercase tracking-widest font-bold mb-2">Version 1.0.0</p>
+              <div className="text-white text-lg">
+                Created by{" "}
+                <a 
+                  href="https://wahidhendrawan.onrender.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-indigo-400 hover:text-indigo-300 font-bold underline underline-offset-4 decoration-2 transition-colors"
+                >
+                  Wahid Hendrawan
+                </a>
+              </div>
+              <div className="mt-4 flex justify-center gap-4">
+                 <div className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-slate-500 border border-white/10">React 19</div>
+                 <div className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-slate-500 border border-white/10">TypeScript</div>
+                 <div className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-slate-500 border border-white/10">Tailwind CSS</div>
+                 <div className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-slate-500 border border-white/10">Vite</div>
+              </div>
             </div>
           </div>
         </div>

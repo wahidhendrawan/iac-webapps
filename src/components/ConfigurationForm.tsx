@@ -1,16 +1,24 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTerraformStore } from '../store';
 import { PROVIDERS } from '../data/providers';
-import { HelpCircle, Info, Settings } from 'lucide-react';
+import { HelpCircle, Info, Settings, Link as LinkIcon, ChevronRight } from 'lucide-react';
 import { ProviderSettings } from './ProviderSettings';
 
 export function ConfigurationForm() {
   const { resources, selectedResourceId, updateResource } = useTerraformStore();
+  const [showRefHelper, setShowRefHelper] = useState<string | null>(null);
 
   const selectedResource = useMemo(
     () => resources.find((r) => r.id === selectedResourceId) || null,
     [resources, selectedResourceId]
   );
+
+  // Available references for interpolation
+  const availableRefs = useMemo(() => {
+    return resources
+      .filter(r => r.id !== selectedResourceId)
+      .map(r => `${r.type}.${r.name}.id`);
+  }, [resources, selectedResourceId]);
 
   const schema = useMemo(() => {
     if (!selectedResource) return null;
@@ -88,13 +96,40 @@ export function ConfigurationForm() {
                 <span className="ml-2 text-sm text-gray-600">Enabled</span>
               </div>
             ) : (
-              <input
-                type={field.type === 'number' ? 'number' : 'text'}
-                value={selectedResource.properties[field.name] || ''}
-                onChange={(e) => handleChange(field.name, e.target.value)}
-                placeholder={field.placeholder}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
-              />
+              <div className="space-y-2">
+                <input
+                  type={field.type === 'number' ? 'number' : 'text'}
+                  value={selectedResource.properties[field.name] || ''}
+                  onChange={(e) => handleChange(field.name, e.target.value)}
+                  onFocus={() => setShowRefHelper(field.name)}
+                  placeholder={field.placeholder}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
+                />
+                
+                {showRefHelper === field.name && availableRefs.length > 0 && field.type === 'text' && (
+                  <div className="bg-gray-50 rounded-lg p-3 border border-gray-200 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+                      <LinkIcon className="w-3 h-3" />
+                      Reference other resources
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {availableRefs.map((ref) => (
+                        <button
+                          key={ref}
+                          onClick={() => {
+                            handleChange(field.name, ref);
+                            setShowRefHelper(null);
+                          }}
+                          className="text-xs bg-white border border-gray-200 hover:border-indigo-400 hover:text-indigo-600 px-2 py-1 rounded transition-all flex items-center gap-1"
+                        >
+                          <ChevronRight className="w-3 h-3 text-indigo-400" />
+                          {ref}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
 
             {/* Helper text if needed */}
