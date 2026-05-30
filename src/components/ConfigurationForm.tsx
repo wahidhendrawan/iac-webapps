@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTerraformStore } from '../store';
 import { PROVIDERS } from '../data/providers';
-import { HelpCircle, Info, Settings, Link as LinkIcon, ChevronRight } from 'lucide-react';
+import { Info, Settings, Link as LinkIcon, ChevronRight } from 'lucide-react';
 import { ProviderSettings } from './ProviderSettings';
 
 export function ConfigurationForm() {
@@ -65,12 +65,13 @@ export function ConfigurationForm() {
             <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1 flex items-center gap-1">
               {field.label}
               {field.required && <span className="text-red-500 text-xs ml-1" title="Required">*</span>}
-              {field.description && (
-                <span title={field.description} className="cursor-help ml-1">
-                  <HelpCircle className="w-3 h-3 text-gray-400 dark:text-slate-600" />
-                </span>
-              )}
             </label>
+            
+            {field.description && (
+              <p className="mb-2 text-xs text-gray-500 dark:text-slate-400 leading-relaxed">
+                {field.description}
+              </p>
+            )}
 
             {field.type === 'select' ? (
               <select

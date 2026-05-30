@@ -53,6 +53,23 @@ const RULES: SecurityRule[] = [
           }
           return null;
       }
+  },
+  {
+    id: 'open-ssh-rdp',
+    check: (res) => {
+        // This is a simplified check assuming port info might be in properties
+        const body = JSON.stringify(res.properties);
+        if (body.includes('0.0.0.0/0') && (body.includes('22') || body.includes('3389'))) {
+            return {
+                ruleId: 'open-ssh-rdp',
+                resourceId: res.id,
+                severity: 'critical',
+                message: `Resource "${res.name}" has SSH/RDP ports open to the public.`,
+                remediation: 'Restrict access to specific IP ranges to prevent brute-force attacks.'
+            };
+        }
+        return null;
+    }
   }
 ];
 
