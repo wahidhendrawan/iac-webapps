@@ -28,6 +28,7 @@ interface TerraformState {
   setIaCTool: (tool: IaCTool) => void;
   toggleTheme: () => void;
   updateAISettings: (settings: Partial<AISettings>) => void;
+  setResources: (resources: Resource[]) => void;
 }
 
 export const useTerraformStore = create<TerraformState>()(
@@ -167,6 +168,10 @@ export const useTerraformStore = create<TerraformState>()(
         set((state) => ({
           aiSettings: { ...state.aiSettings, ...settings }
         }));
+      },
+
+      setResources: (resources) => {
+        set({ resources, selectedResourceId: resources[0]?.id || null });
       },
     }),
     {

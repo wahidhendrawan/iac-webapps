@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTerraformStore } from '../store';
-import { Bot, Send, X, Sparkles, Loader2, Settings } from 'lucide-react';
+import { Bot, Send, X, Sparkles, Loader2, Settings, Zap } from 'lucide-react';
 import { AISettings } from './AISettings';
 import type { ResourceType } from '../types';
 
@@ -8,6 +8,14 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
+
+const SHORTCUTS = [
+  { label: "S3 Bucket", text: "Add an AWS S3 bucket" },
+  { label: "EC2 Instance", text: "Create an AWS EC2 instance" },
+  { label: "VPC Module", text: "Add the AWS VPC module" },
+  { label: "Azure VM", text: "Create an Azure Virtual Machine" },
+  { label: "GCP Instance", text: "Add a Google Compute instance" },
+];
 
 export function AICopilot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,16 +34,16 @@ export function AICopilot() {
     }
   }, [messages, isTyping]);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  const onSend = async (text?: string) => {
+    const messageToSend = text || input;
+    if (!messageToSend.trim()) return;
 
-    const userMessage = input.trim();
+    const userMessage = messageToSend.trim();
     setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
-    setInput('');
+    if (!text) setInput('');
     setIsTyping(true);
 
     if (aiSettings.provider === 'simulation') {
-        // ... (Simulasi logic yang sudah ada)
         setTimeout(() => {
             let response = "I'm not sure how to do that yet. Try asking me to add a specific resource like an AWS S3 bucket.";
             const lowerMsg = userMessage.toLowerCase();
@@ -138,7 +146,7 @@ export function AICopilot() {
 
       {/* Chat Panel */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-96 h-[500px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 flex flex-col z-40 overflow-hidden animate-in slide-in-from-bottom-4 duration-300 transition-colors">
+        <div className="fixed bottom-24 right-6 w-96 h-[560px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-slate-800 flex flex-col z-40 overflow-hidden animate-in slide-in-from-bottom-4 duration-300 transition-colors">
           {/* Header */}
           <div className="px-6 py-4 bg-indigo-600 flex items-center justify-between">
             <div className="flex items-center gap-2 text-white">
@@ -180,19 +188,33 @@ export function AICopilot() {
             )}
           </div>
 
-          {/* Input */}
+          {/* Input Area */}
           <div className="p-4 border-t dark:border-slate-800 bg-gray-50 dark:bg-slate-950">
+            {/* Shortcuts */}
+            <div className="flex flex-wrap gap-2 mb-3">
+               {SHORTCUTS.map((s, i) => (
+                  <button
+                    key={i}
+                    onClick={() => onSend(s.text)}
+                    className="flex items-center gap-1 px-2 py-1 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-[10px] font-bold text-gray-600 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500 transition-all"
+                  >
+                    <Zap className="w-2.5 h-2.5 text-amber-500" />
+                    {s.label}
+                  </button>
+               ))}
+            </div>
+
             <div className="relative">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                onKeyPress={(e) => e.key === 'Enter' && onSend()}
                 placeholder="Ask me to add a resource..."
                 className="w-full pl-4 pr-12 py-2.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-sm"
               />
               <button
-                onClick={handleSend}
+                onClick={() => onSend()}
                 disabled={!input.trim()}
                 className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-all disabled:opacity-30"
               >

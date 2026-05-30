@@ -11,7 +11,9 @@ export type ResourceType =
   | 'huaweicloud_compute_instance'
   | 'sangfor_vm'
   | 'local_file'
-  | 'module';
+  | 'module'
+  | 'kubernetes_deployment'
+  | 'kubernetes_service';
 
 export interface TerraformFile {
   filename: string;
@@ -92,7 +94,7 @@ export interface DevOpsSettings {
   branchName: string;
 }
 
-export type IaCTool = 'terraform' | 'opentofu' | 'pulumi';
+export type IaCTool = 'terraform' | 'opentofu' | 'pulumi' | 'helm';
 
 export type AIProvider = 'simulation' | 'deepseek' | 'openai';
 

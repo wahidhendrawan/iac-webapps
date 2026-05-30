@@ -1,6 +1,7 @@
-import { Cloud, Info, Database, Layout, Rocket, ChevronDown, Sun, Moon, CircleDollarSign } from 'lucide-react';
+import { Cloud, Info, Database, Layout, Rocket, ChevronDown, Sun, Moon, CircleDollarSign, FileUp } from 'lucide-react';
 import { useTerraformStore } from '../store';
 import { calculateMonthlyCost } from '../data/pricing';
+import { parseHCL } from '../utils/hclParser';
 import type { IaCTool } from '../types';
 
 interface HeaderProps {
@@ -11,13 +12,36 @@ interface HeaderProps {
 }
 
 export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevOps }: HeaderProps) {
-  const { iacTool, setIaCTool, theme, toggleTheme, resources } = useTerraformStore();
+  const { iacTool, setIaCTool, theme, toggleTheme, resources, setResources } = useTerraformStore();
   const totalCost = calculateMonthlyCost(resources);
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      try {
+        const importedResources = parseHCL(content);
+        if (importedResources.length > 0) {
+            setResources(importedResources);
+        } else {
+            alert("No valid Terraform resources found in the file.");
+        }
+      } catch (err) {
+        console.error("Import failed", err);
+        alert("Failed to parse the .tf file. Please ensure it's a valid Terraform configuration.");
+      }
+    };
+    reader.readAsText(file);
+  };
 
   const tools: { id: IaCTool; name: string }[] = [
     { id: 'terraform', name: 'Terraform' },
     { id: 'opentofu', name: 'OpenTofu' },
     { id: 'pulumi', name: 'Pulumi (TS)' },
+    { id: 'helm', name: 'Helm Chart' },
   ];
 
   return (
@@ -70,28 +94,35 @@ export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevO
 
         <button
           onClick={onOpenDevOps}
-          className="flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors"
+          className="flex items-center gap-2 text-gray-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
         >
           <Rocket className="w-5 h-5" />
           <span className="text-sm font-medium">Export</span>
         </button>
+
+        <label className="flex items-center gap-2 text-gray-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer">
+          <FileUp className="w-5 h-5" />
+          <span className="text-sm font-medium">Import</span>
+          <input type="file" accept=".tf" onChange={handleImport} className="hidden" />
+        </label>
+
         <button
           onClick={onOpenTemplates}
-          className="flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors"
+          className="flex items-center gap-2 text-gray-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
         >
           <Layout className="w-5 h-5" />
           <span className="text-sm font-medium">Templates</span>
         </button>
         <button
           onClick={onOpenBackend}
-          className="flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors"
+          className="flex items-center gap-2 text-gray-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
         >
           <Database className="w-5 h-5" />
           <span className="text-sm font-medium">Backend</span>
         </button>
         <button
           onClick={onOpenAbout}
-          className="flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors"
+          className="flex items-center gap-2 text-gray-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
         >
           <Info className="w-5 h-5" />
           <span className="text-sm font-medium">About</span>
