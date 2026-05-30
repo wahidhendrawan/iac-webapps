@@ -10,11 +10,14 @@ interface Message {
 }
 
 const SHORTCUTS = [
-  { label: "S3 Bucket", text: "Add an AWS S3 bucket" },
-  { label: "EC2 Instance", text: "Create an AWS EC2 instance" },
+  { label: "AWS Web Server", text: "Add an AWS EC2 instance" },
+  { label: "AWS S3 Bucket", text: "Create an AWS S3 bucket" },
+  { label: "Azure VM", text: "Add an Azure virtual machine" },
+  { label: "GCP Instance", text: "Create a Google Compute instance" },
   { label: "VPC Module", text: "Add the AWS VPC module" },
-  { label: "Azure VM", text: "Create an Azure Virtual Machine" },
-  { label: "GCP Instance", text: "Add a Google Compute instance" },
+  { label: "K8s Deployment", text: "Create a Kubernetes deployment" },
+  { label: "Alibaba ECS", text: "Add an Alibaba ECS instance" },
+  { label: "Huawei ECS", text: "Create a Huawei ECS instance" },
 ];
 
 export function AICopilot() {
@@ -47,17 +50,33 @@ export function AICopilot() {
         setTimeout(() => {
             let response = "I'm not sure how to do that yet. Try asking me to add a specific resource like an AWS S3 bucket.";
             const lowerMsg = userMessage.toLowerCase();
-            // Simple keyword matching for simulation
+            
+            // Robust keyword matching
             const mappings: Record<string, { type: ResourceType; name: string }> = {
-              's3': { type: 'aws_s3_bucket', name: 'S3 Bucket' },
-              'aws instance': { type: 'aws_instance', name: 'EC2 Instance' },
-              'ec2': { type: 'aws_instance', name: 'EC2 Instance' },
-              'azure vm': { type: 'azurerm_virtual_machine', name: 'Azure VM' },
-              'gcp instance': { type: 'google_compute_instance', name: 'GCP Instance' },
-              'proxmox': { type: 'proxmox_vm_qemu', name: 'Proxmox VM' },
-              'vpc module': { type: 'module', name: 'VPC Module' },
-              'deployment': { type: 'kubernetes_deployment', name: 'K8s Deployment' },
-              'service': { type: 'kubernetes_service', name: 'K8s Service' },
+                's3': { type: 'aws_s3_bucket', name: 'S3 Bucket' },
+                'bucket': { type: 'aws_s3_bucket', name: 'S3 Bucket' },
+                'aws instance': { type: 'aws_instance', name: 'AWS EC2 Instance' },
+                'ec2': { type: 'aws_instance', name: 'AWS EC2 Instance' },
+                'azure virtual machine': { type: 'azurerm_virtual_machine', name: 'Azure VM' },
+                'azure vm': { type: 'azurerm_virtual_machine', name: 'Azure VM' },
+                'azure': { type: 'azurerm_virtual_machine', name: 'Azure VM' },
+                'google compute instance': { type: 'google_compute_instance', name: 'GCP Instance' },
+                'google': { type: 'google_compute_instance', name: 'GCP Instance' },
+                'gcp': { type: 'google_compute_instance', name: 'GCP Instance' },
+
+                'proxmox': { type: 'proxmox_vm_qemu', name: 'Proxmox VM' },
+                'vsphere': { type: 'vsphere_virtual_machine', name: 'vSphere VM' },
+                'alibaba': { type: 'alicloud_instance', name: 'Alibaba ECS' },
+                'alicloud': { type: 'alicloud_instance', name: 'Alibaba ECS' },
+                'huawei': { type: 'huaweicloud_compute_instance', name: 'Huawei ECS' },
+                'huaweicloud': { type: 'huaweicloud_compute_instance', name: 'Huawei ECS' },
+                'sangfor': { type: 'sangfor_vm', name: 'Sangfor VM' },
+                'vpc': { type: 'module', name: 'VPC Module' },
+                'module': { type: 'module', name: 'VPC Module' },
+                'deployment': { type: 'kubernetes_deployment', name: 'K8s Deployment' },
+                'k8s': { type: 'kubernetes_deployment', name: 'K8s Deployment' },
+                'kubernetes': { type: 'kubernetes_deployment', name: 'K8s Deployment' },
+                'service': { type: 'kubernetes_service', name: 'K8s Service' },
             };
 
             for (const [key, resource] of Object.entries(mappings)) {

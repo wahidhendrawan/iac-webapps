@@ -1,6 +1,6 @@
 import { Cloud, Info, Database, Layout, Rocket, ChevronDown, Sun, Moon, CircleDollarSign, FileUp } from 'lucide-react';
 import { useTerraformStore } from '../store';
-import { calculateMonthlyCost } from '../data/pricing';
+import { calculateTotalCost } from '../data/pricing';
 import { parseHCL } from '../utils/hclParser';
 import type { IaCTool } from '../types';
 
@@ -13,7 +13,12 @@ interface HeaderProps {
 
 export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevOps }: HeaderProps) {
   const { iacTool, setIaCTool, theme, toggleTheme, resources, setResources } = useTerraformStore();
-  const totalCost = calculateMonthlyCost(resources);
+  const cost = calculateTotalCost(resources);
+
+  const formatCurrency = (val: number, curr: string) => {
+    if (curr === 'IDR') return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+  };
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -56,11 +61,42 @@ export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevO
 
         <div className="h-8 w-px bg-gray-200 dark:bg-slate-800" />
 
-        <div className="flex items-center gap-3 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 rounded-lg border border-emerald-100 dark:border-emerald-800/30 transition-all">
-            <CircleDollarSign className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            <div className="flex flex-col">
-                <span className="text-[9px] font-bold text-emerald-500 uppercase leading-none">Est. Cost</span>
-                <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">${totalCost.toFixed(2)}<span className="text-[10px] font-normal opacity-70">/mo</span></span>
+        <div className="relative group/cost">
+            <div className="flex items-center gap-3 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 rounded-lg border border-emerald-100 dark:border-emerald-800/30 cursor-help transition-all">
+                <CircleDollarSign className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <div className="flex flex-col">
+                    <span className="text-[9px] font-bold text-emerald-500 uppercase leading-none">Est. Cost</span>
+                    <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                        {formatCurrency(cost.usd.monthly, 'USD')}
+                        <span className="text-[10px] font-normal opacity-70 ml-1">/mo</span>
+                    </span>
+                </div>
+            </div>
+            
+            {/* Cost Breakdown Tooltip */}
+            <div className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-gray-200 dark:border-slate-700 p-4 z-50 invisible group-hover/cost:visible animate-in fade-in slide-in-from-top-2 duration-200">
+                <h3 className="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest mb-3 border-b dark:border-slate-700 pb-2">Estimated Cost Breakdown</h3>
+                
+                <div className="space-y-4">
+                    <section>
+                        <div className="text-[10px] font-bold text-indigo-500 uppercase mb-2">USD Breakdown</div>
+                        <div className="grid grid-cols-3 gap-2">
+                            <div className="flex flex-col"><span className="text-[9px] text-gray-400 uppercase">Hourly</span><span className="text-xs font-bold dark:text-white">${cost.usd.hourly.toFixed(3)}</span></div>
+                            <div className="flex flex-col"><span className="text-[9px] text-gray-400 uppercase">Daily</span><span className="text-xs font-bold dark:text-white">${cost.usd.daily.toFixed(2)}</span></div>
+                            <div className="flex flex-col"><span className="text-[9px] text-gray-400 uppercase">Monthly</span><span className="text-xs font-bold dark:text-white">${cost.usd.monthly.toFixed(2)}</span></div>
+                        </div>
+                    </section>
+
+                    <section className="pt-2 border-t dark:border-slate-700">
+                        <div className="text-[10px] font-bold text-emerald-500 uppercase mb-2">IDR (Convert)</div>
+                        <div className="grid grid-cols-1 gap-1">
+                             <div className="flex justify-between text-xs dark:text-white"><span>Hourly</span><strong>{formatCurrency(cost.idr.hourly, 'IDR')}</strong></div>
+                             <div className="flex justify-between text-xs dark:text-white"><span>Daily</span><strong>{formatCurrency(cost.idr.daily, 'IDR')}</strong></div>
+                             <div className="flex justify-between text-xs dark:text-white"><span>Monthly</span><strong>{formatCurrency(cost.idr.monthly, 'IDR')}</strong></div>
+                        </div>
+                    </section>
+                </div>
+                <p className="mt-4 text-[9px] text-gray-400 italic leading-tight">Prices are based on average static estimates. Use cloud specific calculators for billing-ready quotes.</p>
             </div>
         </div>
 
