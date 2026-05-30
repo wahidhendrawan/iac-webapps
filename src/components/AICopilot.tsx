@@ -100,10 +100,14 @@ export function AICopilot() {
         
         const systemPrompt = `You are an Infrastructure as Code expert. 
         You help users design cloud architecture. 
-        Current supported tools: Terraform, OpenTofu, Pulumi.
-        Current supported resources: aws_instance, aws_s3_bucket, azurerm_virtual_machine, google_compute_instance, vsphere_virtual_machine, proxmox_vm_qemu, alicloud_instance, huaweicloud_compute_instance, sangfor_vm, local_file, module.
+        Current supported tools: Terraform, OpenTofu, Pulumi, Helm.
+        Current supported resources: aws_instance, aws_s3_bucket, azurerm_virtual_machine, google_compute_instance, vsphere_virtual_machine, proxmox_vm_qemu, alicloud_instance, huaweicloud_compute_instance, sangfor_vm, local_file, module, kubernetes_deployment, kubernetes_service.
         
-        If the user asks to add a resource, start your response with "[ACTION:ADD_RESOURCE:type]" where type is one of the supported resource types above.
+        CRITICAL: If the user asks to add a resource, you MUST start your response with the following exact tag:
+        [ACTION:ADD_RESOURCE:type]
+        Replace 'type' with the specific resource type from the list above. 
+        Example: "[ACTION:ADD_RESOURCE:aws_s3_bucket] I've added the bucket for you."
+        
         Then provide a brief explanation. 
         Be concise and professional.`;
 
@@ -120,7 +124,7 @@ export function AICopilot() {
                     ...messages.map(m => ({ role: m.role, content: m.content })),
                     { role: 'user', content: userMessage }
                 ],
-                temperature: 0.7
+                temperature: 0.5 // Lower temperature for more consistent formatting
             })
         });
 
@@ -129,12 +133,19 @@ export function AICopilot() {
         const data = await response.json();
         let aiContent = data.choices[0].message.content;
 
-        // Process potential actions
-        if (aiContent.includes('[ACTION:ADD_RESOURCE:')) {
-            const match = aiContent.match(/\[ACTION:ADD_RESOURCE:(.*?)\]/);
-            if (match && match[1]) {
-                addResource(match[1] as ResourceType);
-                aiContent = aiContent.replace(/\[ACTION:ADD_RESOURCE:.*?\]/, '').trim();
+        // More robust action parsing using regex (case-insensitive and handles potential wrapper chars)
+        const actionRegex = /\[ACTION:ADD_RESOURCE:([a-z0-9_]+)\]/i;
+        const match = aiContent.match(actionRegex);
+        
+        if (match && match[1]) {
+            const resourceType = match[1].toLowerCase() as ResourceType;
+            // Verify if resource type is actually valid
+            const allTypes = ['aws_instance', 'aws_s3_bucket', 'azurerm_virtual_machine', 'google_compute_instance', 'vsphere_virtual_machine', 'proxmox_vm_qemu', 'alicloud_instance', 'huaweicloud_compute_instance', 'sangfor_vm', 'local_file', 'module', 'kubernetes_deployment', 'kubernetes_service'];
+            
+            if (allTypes.includes(resourceType)) {
+                addResource(resourceType);
+                // Remove the action tag from display
+                aiContent = aiContent.replace(actionRegex, '').trim();
             }
         }
 

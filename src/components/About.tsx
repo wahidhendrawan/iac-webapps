@@ -82,29 +82,29 @@ export function About({ onClose }: AboutProps) {
                 <Network className="w-8 h-8 text-indigo-500 mb-3" />
                 <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Visual Designer</h4>
                 <p className="text-xs text-gray-500 dark:text-slate-400">
-                  Drag & Drop interface to design infrastructure topology with automated relationship mapping.
+                  Drag & Drop interface with synchronized editing and automated relationship mapping.
                 </p>
               </div>
 
               <div className="p-4 border border-gray-100 dark:border-slate-800 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all">
                 <Rocket className="w-8 h-8 text-emerald-500 mb-3" />
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Multi-Tool & DevOps</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">DeepSeek AI & Ops</h4>
                 <p className="text-xs text-gray-500 dark:text-slate-400">
-                  Generate code for Terraform, OpenTofu, Pulumi, and Helm Charts with CI/CD automation.
+                  Advanced AI actions that modify your project resources directly via natural language.
                 </p>
               </div>
 
               <div className="p-4 border border-gray-100 dark:border-slate-800 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800 transition-all">
                 <Database className="w-8 h-8 text-amber-500 mb-3" />
-                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">HCL Importer</h4>
+                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Real-time Pricing</h4>
                 <p className="text-xs text-gray-500 dark:text-slate-400">
-                  Reverse engineer existing Terraform files into visual diagrams instantly.
+                  Estimate infrastructure costs in USD and IDR with live exchange rate integration.
                 </p>
               </div>
             </div>
 
             <div className="bg-slate-900 rounded-2xl p-8 text-center shadow-inner border border-white/5">
-              <p className="text-slate-400 text-xs uppercase tracking-widest font-bold mb-2">Version 1.4.0</p>
+              <p className="text-slate-400 text-xs uppercase tracking-widest font-bold mb-2">Version 1.7.0</p>
               <div className="text-white text-lg">
                 Created by{" "}
                 <a 
