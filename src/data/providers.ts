@@ -176,5 +176,26 @@ export const PROVIDERS: Provider[] = [
         ]
       }
     ]
+  },
+  {
+    id: 'aws', // We reuse existing provider or create a virtual 'modules' one
+    name: 'AWS Modules',
+    resources: [
+      {
+        type: 'module',
+        provider: 'aws',
+        name: 'VPC Module',
+        description: 'High-level AWS VPC Module from Terraform Registry',
+        source: 'terraform-aws-modules/vpc/aws',
+        version: '5.0.0',
+        fields: [
+          { name: 'name', label: 'VPC Name', type: 'text', required: true, defaultValue: 'my-vpc' },
+          { name: 'cidr', label: 'CIDR Block', type: 'text', required: true, defaultValue: '10.0.0.0/16' },
+          { name: 'azs', label: 'Availability Zones', type: 'text', required: true, defaultValue: '["us-east-1a", "us-east-1b"]' },
+          { name: 'private_subnets', label: 'Private Subnets', type: 'text', required: true, defaultValue: '["10.0.1.0/24", "10.0.2.0/24"]' },
+          { name: 'public_subnets', label: 'Public Subnets', type: 'text', required: true, defaultValue: '["10.0.101.0/24", "10.0.102.0/24"]' },
+        ]
+      }
+    ]
   }
 ];

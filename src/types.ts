@@ -10,7 +10,8 @@ export type ResourceType =
   | 'alicloud_instance'
   | 'huaweicloud_compute_instance'
   | 'sangfor_vm'
-  | 'local_file';
+  | 'local_file'
+  | 'module';
 
 export interface TerraformFile {
   filename: string;
@@ -34,6 +35,8 @@ export interface ResourceSchema {
   name: string;
   description: string;
   fields: ResourceField[];
+  source?: string; // For modules
+  version?: string; // For modules
 }
 
 export interface Resource {
@@ -41,6 +44,7 @@ export interface Resource {
   type: ResourceType;
   name: string; // The resource name in Terraform (e.g., resource "type" "name")
   properties: Record<string, any>;
+  position?: { x: number; y: number };
 }
 
 export interface ProviderConfig {
@@ -73,3 +77,19 @@ export interface ProviderSettings {
 }
 
 export type AllProviderSettings = Record<ProviderType, ProviderSettings>;
+
+export type BackendType = 's3' | 'gcs' | 'azurerm' | 'kubernetes' | 'local' | 'remote';
+
+export interface BackendConfig {
+  type: BackendType;
+  properties: Record<string, any>;
+}
+
+export type CICDProvider = 'none' | 'github' | 'gitlab';
+
+export interface DevOpsSettings {
+  ciCdProvider: CICDProvider;
+  branchName: string;
+}
+
+export type IaCTool = 'terraform' | 'opentofu' | 'pulumi';
