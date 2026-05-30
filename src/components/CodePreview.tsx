@@ -86,8 +86,8 @@ export function CodePreview({ onOpenSecurity }: CodePreviewProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-900 border-l border-gray-700 overflow-hidden">
-      <div className="px-4 py-3 bg-gray-800 border-b border-gray-700 flex items-center justify-between shadow-sm flex-shrink-0">
+    <div className="flex flex-col h-full bg-gray-900 dark:bg-slate-950 border-l border-gray-700 dark:border-slate-800 overflow-hidden transition-colors">
+      <div className="px-4 py-3 bg-gray-800 dark:bg-slate-900 border-b border-gray-700 dark:border-slate-800 flex items-center justify-between shadow-sm flex-shrink-0">
         <div className="flex items-center gap-4">
           <h2 className="text-sm font-semibold text-gray-200 flex items-center gap-2">
             <CodeIcon className="w-4 h-4 text-indigo-400" />
@@ -95,7 +95,7 @@ export function CodePreview({ onOpenSecurity }: CodePreviewProps) {
           </h2>
           
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-900/50 border border-gray-700">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-900/50 dark:bg-slate-950/50 border border-gray-700 dark:border-slate-800">
                 {validationErrors.length > 0 ? (
                 <>
                     <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
@@ -111,9 +111,9 @@ export function CodePreview({ onOpenSecurity }: CodePreviewProps) {
 
             <button 
                 onClick={onOpenSecurity}
-                className={`flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-900/50 border transition-all hover:bg-gray-800 ${
+                className={`flex items-center gap-1.5 px-2 py-1 rounded-md bg-gray-900/50 dark:bg-slate-950/50 border transition-all hover:bg-gray-800 dark:hover:bg-slate-800 ${
                 maxSecuritySeverity === 'critical' || maxSecuritySeverity === 'high' ? 'border-red-500/50' : 
-                maxSecuritySeverity === 'medium' ? 'border-amber-500/50' : 'border-gray-700'
+                maxSecuritySeverity === 'medium' ? 'border-amber-500/50' : 'border-gray-700 dark:border-slate-800'
             }`}>
                 {securityFindings.length > 0 ? (
                 <>
@@ -138,7 +138,7 @@ export function CodePreview({ onOpenSecurity }: CodePreviewProps) {
             onClick={handleCopy}
             className={clsx(
               "p-1.5 rounded-md transition-colors text-xs font-medium flex items-center gap-1",
-              copied ? "text-green-400 bg-green-900/20" : "text-gray-400 hover:text-white hover:bg-gray-700"
+              copied ? "text-green-400 bg-green-900/20" : "text-gray-400 hover:text-white hover:bg-gray-700 dark:hover:bg-slate-800"
             )}
             title="Copy to clipboard"
           >
@@ -147,14 +147,14 @@ export function CodePreview({ onOpenSecurity }: CodePreviewProps) {
           </button>
           <button
             onClick={handleDownload}
-            className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+            className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 dark:hover:bg-slate-800 transition-colors"
             title="Download .tf file"
           >
             <Download className="w-3.5 h-3.5" />
           </button>
            <button
             onClick={handleDownloadZip}
-            className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+            className="p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 dark:hover:bg-slate-800 transition-colors"
             title="Download Project (ZIP)"
           >
             <FolderArchive className="w-3.5 h-3.5" />

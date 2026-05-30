@@ -1,4 +1,4 @@
-import { Cloud, Info, Database, Layout, Rocket, ChevronDown } from 'lucide-react';
+import { Cloud, Info, Database, Layout, Rocket, ChevronDown, Sun, Moon } from 'lucide-react';
 import { useTerraformStore } from '../store';
 import type { IaCTool } from '../types';
 
@@ -10,7 +10,7 @@ interface HeaderProps {
 }
 
 export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevOps }: HeaderProps) {
-  const { iacTool, setIaCTool } = useTerraformStore();
+  const { iacTool, setIaCTool, theme, toggleTheme } = useTerraformStore();
 
   const tools: { id: IaCTool; name: string }[] = [
     { id: 'terraform', name: 'Terraform' },
@@ -19,16 +19,16 @@ export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevO
   ];
 
   return (
-    <header className="bg-white border-b border-gray-200 h-16 flex items-center px-6 justify-between shrink-0 z-10">
+    <header className="bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 h-16 flex items-center px-6 justify-between shrink-0 z-10 transition-colors">
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-3">
           <div className="bg-indigo-600 p-2 rounded-lg">
             <Cloud className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-gray-800">IaC WebApps</h1>
+          <h1 className="text-xl font-bold text-gray-800 dark:text-white">IaC WebApps</h1>
         </div>
 
-        <div className="h-8 w-px bg-gray-200" />
+        <div className="h-8 w-px bg-gray-200 dark:bg-slate-800" />
 
         <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Target Tool</span>
@@ -36,7 +36,7 @@ export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevO
                 <select
                     value={iacTool}
                     onChange={(e) => setIaCTool(e.target.value as IaCTool)}
-                    className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-3 pr-8 py-1.5 cursor-pointer hover:bg-white transition-all outline-none"
+                    className="appearance-none bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-3 pr-8 py-1.5 cursor-pointer hover:bg-white dark:hover:bg-slate-700 transition-all outline-none"
                 >
                     {tools.map(tool => (
                         <option key={tool.id} value={tool.id}>{tool.name}</option>
@@ -48,6 +48,14 @@ export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevO
       </div>
       
       <div className="flex items-center gap-4">
+        <button
+            onClick={toggleTheme}
+            className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-all"
+            title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+        >
+            {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+        </button>
+
         <button
           onClick={onOpenDevOps}
           className="flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors"
