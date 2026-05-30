@@ -1,8 +1,9 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useRef } from 'react';
 import {
   ReactFlow,
   Background,
   Controls,
+  Panel,
 } from '@xyflow/react';
 import type {
   Node,
@@ -11,9 +12,12 @@ import type {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { useTerraformStore } from '../store';
+import { Image as ImageIcon } from 'lucide-react';
+import { toPng } from 'html-to-image';
 
 export function VisualDesigner() {
-  const { resources, selectedResourceId, selectResource, updateResourcePosition } = useTerraformStore();
+  const { resources, selectedResourceId, selectResource, updateResourcePosition, theme } = useTerraformStore();
+  const flowRef = useRef<HTMLDivElement>(null);
 
   // Convert resources to React Flow nodes
   const nodes: Node[] = useMemo(() => {
@@ -75,8 +79,26 @@ export function VisualDesigner() {
     selectResource(node.id);
   }, [selectResource]);
 
+  const onExportImage = useCallback(() => {
+    if (flowRef.current === null) return;
+
+    toPng(flowRef.current, {
+      backgroundColor: theme === 'dark' ? '#020617' : '#f8fafc',
+      cacheBust: true,
+    })
+      .then((dataUrl) => {
+        const link = document.createElement('a');
+        link.download = 'iac-infrastructure-diagram.png';
+        link.href = dataUrl;
+        link.click();
+      })
+      .catch((err) => {
+        console.error('Export failed', err);
+      });
+  }, [theme]);
+
   return (
-    <div className="flex-1 w-full h-full min-h-[600px] bg-gray-50 relative overflow-hidden">
+    <div ref={flowRef} className="flex-1 w-full h-full min-h-[600px] bg-gray-50 dark:bg-slate-950 relative overflow-hidden transition-colors">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -85,8 +107,17 @@ export function VisualDesigner() {
         fitView
         style={{ width: '100%', height: '100%' }}
       >
-        <Background color="#cbd5e1" gap={20} />
-        <Controls />
+        <Background color={theme === 'dark' ? '#1e293b' : '#cbd5e1'} gap={20} />
+        <Controls className="dark:bg-slate-900 dark:border-slate-800" />
+        <Panel position="bottom-right" className="mb-4 mr-4">
+            <button
+                onClick={onExportImage}
+                className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg shadow-lg text-sm font-semibold text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition-all"
+            >
+                <ImageIcon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                Export PNG
+            </button>
+        </Panel>
       </ReactFlow>
     </div>
   );
