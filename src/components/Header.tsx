@@ -1,5 +1,6 @@
-import { Cloud, Info, Database, Layout, Rocket, ChevronDown, Sun, Moon } from 'lucide-react';
+import { Cloud, Info, Database, Layout, Rocket, ChevronDown, Sun, Moon, CircleDollarSign } from 'lucide-react';
 import { useTerraformStore } from '../store';
+import { calculateMonthlyCost } from '../data/pricing';
 import type { IaCTool } from '../types';
 
 interface HeaderProps {
@@ -10,7 +11,8 @@ interface HeaderProps {
 }
 
 export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevOps }: HeaderProps) {
-  const { iacTool, setIaCTool, theme, toggleTheme } = useTerraformStore();
+  const { iacTool, setIaCTool, theme, toggleTheme, resources } = useTerraformStore();
+  const totalCost = calculateMonthlyCost(resources);
 
   const tools: { id: IaCTool; name: string }[] = [
     { id: 'terraform', name: 'Terraform' },
@@ -26,6 +28,16 @@ export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevO
             <Cloud className="w-6 h-6 text-white" />
           </div>
           <h1 className="text-xl font-bold text-gray-800 dark:text-white">IaC WebApps</h1>
+        </div>
+
+        <div className="h-8 w-px bg-gray-200 dark:bg-slate-800" />
+
+        <div className="flex items-center gap-3 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 rounded-lg border border-emerald-100 dark:border-emerald-800/30 transition-all">
+            <CircleDollarSign className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <div className="flex flex-col">
+                <span className="text-[9px] font-bold text-emerald-500 uppercase leading-none">Est. Cost</span>
+                <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">${totalCost.toFixed(2)}<span className="text-[10px] font-normal opacity-70">/mo</span></span>
+            </div>
         </div>
 
         <div className="h-8 w-px bg-gray-200 dark:bg-slate-800" />
