@@ -1,4 +1,5 @@
-import { Cloud, Info, Database, Layout, Rocket, ChevronDown, Sun, Moon, CircleDollarSign, FileUp } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Cloud, Info, Database, Layout, Rocket, ChevronDown, Sun, Moon, CircleDollarSign, FileUp, RefreshCw } from 'lucide-react';
 import { useTerraformStore } from '../store';
 import { calculateTotalCost } from '../data/pricing';
 import { parseHCL } from '../utils/hclParser';
@@ -13,7 +14,27 @@ interface HeaderProps {
 
 export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevOps }: HeaderProps) {
   const { iacTool, setIaCTool, theme, toggleTheme, resources, setResources } = useTerraformStore();
-  const cost = calculateTotalCost(resources);
+  const [exchangeRate, setExchangeRate] = useState(16250);
+  const [isRateLoading, setIsRateLoading] = useState(true);
+  
+  const cost = calculateTotalCost(resources, exchangeRate);
+
+  useEffect(() => {
+    const fetchRate = async () => {
+      try {
+        const response = await fetch('https://open.er-api.com/v6/latest/USD');
+        const data = await response.json();
+        if (data && data.rates && data.rates.IDR) {
+          setExchangeRate(data.rates.IDR);
+        }
+      } catch (err) {
+        console.error('Failed to fetch exchange rate', err);
+      } finally {
+        setIsRateLoading(false);
+      }
+    };
+    fetchRate();
+  }, []);
 
   const formatCurrency = (val: number, curr: string) => {
     if (curr === 'IDR') return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
@@ -88,7 +109,14 @@ export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevO
                     </section>
 
                     <section className="pt-2 border-t dark:border-slate-700">
-                        <div className="text-[10px] font-bold text-emerald-500 uppercase mb-2">IDR (Convert)</div>
+                        <div className="flex items-center justify-between mb-2">
+                            <div className="text-[10px] font-bold text-emerald-500 uppercase">IDR (Real-time)</div>
+                            {isRateLoading ? (
+                                <RefreshCw className="w-2.5 h-2.5 animate-spin text-gray-400" />
+                            ) : (
+                                <span className="text-[8px] text-gray-400 font-medium">Rate: 1 USD = {formatCurrency(exchangeRate, 'IDR')}</span>
+                            )}
+                        </div>
                         <div className="grid grid-cols-1 gap-1">
                              <div className="flex justify-between text-xs dark:text-white"><span>Hourly</span><strong>{formatCurrency(cost.idr.hourly, 'IDR')}</strong></div>
                              <div className="flex justify-between text-xs dark:text-white"><span>Daily</span><strong>{formatCurrency(cost.idr.daily, 'IDR')}</strong></div>
