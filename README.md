@@ -1,96 +1,69 @@
-# Terraform Builder Webapp
+# IaC WebApps (v1.0.0)
 
-A modern, visual web application for generating Infrastructure as Code (IaC) configurations using Terraform. This tool simplifies the process of creating infrastructure for multi-cloud (AWS, Azure, Google Cloud) and on-premise (VMware vSphere) environments by providing an intuitive graphical interface.
+A powerful, multi-tool visual platform for generating and managing Infrastructure as Code (IaC) configurations. Design your infrastructure visually and instantly generate production-ready code for **Terraform, OpenTofu, or Pulumi**.
 
-## Features
+[![Project Status](https://img.shields.io/badge/status-active-emerald.svg)]()
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![Creator](https://img.shields.io/badge/created%20by-Wahid%20Hendrawan-indigo.svg)](https://wahidhendrawan.onrender.com/)
 
-* **Visual Resource Management**: Drag-and-drop or click-to-add resources from a comprehensive sidebar.
-* **Multi-Cloud Support**: Configure resources for:
-    * **AWS** (EC2, S3)
-    * **Azure** (Virtual Machines)
-    * **Google Cloud** (Compute Instances)
-    * **VMware vSphere** (Virtual Machines)
-    * **Local** (Files)
-* **Real-Time Code Generation**: Instantly preview the generated Terraform HCL code as you configure your resources.
-* **Live Syntax Highlighting**: View the generated code with syntax highlighting for better readability.
-* **Property Configuration**: Dynamic forms based on resource schemas allow you to easily configure properties (e.g., AMI ID, instance type, machine type).
-* **Copy & Download**: Quickly copy the generated code to your clipboard or download it as a `.tf` file.
-* **Dockerized**: Run the entire application in a lightweight Docker container.
+## 🚀 Key Features
 
-## Getting Started
+*   **Multi-Tool Support**: Seamlessly switch between **Terraform**, **OpenTofu**, and **Pulumi (TypeScript)**.
+*   **Visual Designer (Drag & Drop)**: Interactive canvas powered by **React Flow** for designing infrastructure topology with automated relationship mapping.
+*   **Architecture Templates**: Start fast with pre-configured blueprints (e.g., AWS Web Server, Azure VM).
+*   **Advanced Logic**: Support for **Terraform Modules**, **Remote State Backends** (S3, GCS, Azure), and **Resource Dependencies**.
+*   **DevOps & CI/CD**: Automatic generation of **GitHub Actions** and **GitLab CI** pipelines.
+*   **Real-Time Generation & Validation**: Live code preview with syntax highlighting and schema validation to catch errors early.
+*   **Full Project Export**: Download a complete, structured project (ZIP) ready for deployment.
+
+## 🛠 Supported Providers
+
+*   **Public Cloud**: AWS, Azure, Google Cloud, Alibaba Cloud, Huawei Cloud.
+*   **On-Premise/Hybrid**: VMware vSphere, Proxmox VE, Sangfor HCI.
+*   **Local**: Local File System management.
+
+## 📦 Getting Started
 
 ### Prerequisites
 
-* **Docker** and **Docker Compose** installed on your machine.
-* Alternatively, **Node.js** (v18+) and **npm** for local development.
+*   **Docker** and **Docker Compose**.
+*   Alternatively, **Node.js (v20+)** and **npm** for development.
 
-### Running with Docker Compose
+### Running with Docker
 
-The easiest way to run the application is using Docker Compose.
+The fastest way to experience IaC WebApps:
 
-1.  Clone the repository:
+1.  **Clone & Enter**:
     ```bash
     git clone https://github.com/wahidhendrawan/iac-webapps.git
     cd iac-webapps
     ```
 
-2.  Start the application:
+2.  **Launch**:
     ```bash
-    docker-compose up -d --build
+    docker compose up -d --build
     ```
 
-3.  Access the web interface at:
-    ```
-    http://[IP]:8088
-    ```
+3.  **Access**: Open [http://localhost:8088](http://localhost:8088) in your browser.
 
-4.  To stop the application:
-    ```bash
-    docker compose down
-    ```
+### Local Development
 
-### Running Locally (Development)
+1.  Install dependencies: `npm install`
+2.  Start dev server: `npm run dev`
+3.  Build for production: `npm run build`
 
-To run the application locally for development:
+## 🎨 Technology Stack
 
-1.  Install dependencies:
-    ```bash
-    npm install
-    ```
+*   **Framework**: React 19, TypeScript
+*   **Design**: Tailwind CSS, Framer Motion
+*   **Diagramming**: @xyflow/react (React Flow)
+*   **State**: Zustand
+*   **Deployment**: Docker, Nginx
 
-2.  Start the development server:
-    ```bash
-    npm run dev
-    ```
+## 📜 License
 
-3.  Access the application at `http://[IP]:5173`.
+This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for the full text.
 
-4.  To build for production:
-    ```bash
-    npm run build
-    ```
+---
 
-## Usage
-
-1.  **Select a Provider**: Browse the sidebar on the left to find the provider you want to use (e.g., AWS, Azure).
-2.  **Add a Resource**: Click on a resource type (e.g., "EC2 Instance") to add it to your project.
-3.  **Configure Properties**: Select the added resource in the project tree. The center panel will display a form where you can configure its properties (e.g., AMI ID, Instance Type).
-4.  **Preview Code**: The right panel displays the generated Terraform HCL code in real-time.
-5.  **Export**: Use the "Copy" or "Download" buttons in the top-right corner of the code preview panel to save your configuration.
-
-## Technologies Used
-
-* **Frontend**: React, TypeScript, Vite
-* **Styling**: Tailwind CSS
-* **State Management**: Zustand
-* **Icons**: Lucide React
-* **Code Highlighting**: React Syntax Highlighter
-* **Containerization**: Docker, Nginx
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+**IaC WebApps** - Created with ❤️ by [Wahid Hendrawan](https://wahidhendrawan.onrender.com/)
