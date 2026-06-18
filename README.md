@@ -5,7 +5,7 @@
 A powerful, multi-tool visual platform for generating and managing Infrastructure as Code (IaC) configurations. Design your infrastructure visually and instantly generate production-ready code for **Terraform, OpenTofu, Pulumi, or Helm Charts**.
 
 [![Project Status](https://img.shields.io/badge/status-active-emerald.svg)]()
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 [![Creator](https://img.shields.io/badge/created%20by-Wahid%20Hendrawan-indigo.svg)](https://wahidhendrawan.onrender.com/)
 
 ## 🚀 Key Features
