@@ -1,3 +1,5 @@
+[![CI](https://github.com/wahidhendrawan/iac-webapps/actions/workflows/ci.yml/badge.svg)](https://github.com/wahidhendrawan/iac-webapps/actions/workflows/ci.yml)
+
 # IaC WebApps (v1.7.0)
 
 A powerful, multi-tool visual platform for generating and managing Infrastructure as Code (IaC) configurations. Design your infrastructure visually and instantly generate production-ready code for **Terraform, OpenTofu, Pulumi, or Helm Charts**.
