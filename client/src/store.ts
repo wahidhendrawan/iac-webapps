@@ -33,7 +33,7 @@ export const useTerraformStore = create<TerraformState>((set) => ({
     }
 
     // Initialize properties with default values
-    const properties: Record<string, any> = {};
+    const properties: Record<string, unknown> = {};
     schema.fields.forEach(field => {
       if (field.defaultValue !== undefined) {
         properties[field.name] = field.defaultValue;

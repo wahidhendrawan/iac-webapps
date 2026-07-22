@@ -5,7 +5,7 @@ import type { ProviderType } from '../types';
 export function ProviderSettings() {
   const { providerSettings, updateProviderSettings } = useTerraformStore();
 
-  const handleUpdate = (provider: ProviderType, key: string, value: any) => {
+  const handleUpdate = (provider: ProviderType, key: string, value: string | boolean) => {
     updateProviderSettings(provider, { [key]: value });
   };
 

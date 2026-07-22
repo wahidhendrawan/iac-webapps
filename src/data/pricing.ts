@@ -43,7 +43,7 @@ export const getPricingEstimates = (exchangeRate: number = 16250): Record<string
   'kubernetes_service': createBreakdown(5.00, exchangeRate),
 });
 
-export function calculateTotalCost(resources: any[], exchangeRate: number = 16250): PricingCurrency {
+export function calculateTotalCost(resources: Array<{ type: string }>, exchangeRate: number = 16250): PricingCurrency {
   const estimates = getPricingEstimates(exchangeRate);
   const totalMonthlyUsd = resources.reduce((total, res) => {
     const pricing = estimates[res.type] || createBreakdown(0, exchangeRate);

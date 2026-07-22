@@ -44,8 +44,8 @@ export function parseHCL(hcl: string): Resource[] {
   return resources;
 }
 
-function parseProperties(body: string): Record<string, any> {
-  const properties: Record<string, any> = {};
+function parseProperties(body: string): Record<string, unknown> {
+  const properties: Record<string, unknown> = {};
   // Simple key = value regex. Handles strings, booleans, and references.
   // Note: Doesn't handle complex blocks/lists perfectly but good for basic import.
   const propLines = body.split('\n');
@@ -57,17 +57,17 @@ function parseProperties(body: string): Record<string, any> {
     const parts = trimmed.split('=');
     if (parts.length >= 2) {
       const key = parts[0].trim();
-      let value = parts.slice(1).join('=').trim();
+      let value: string | boolean | number = parts.slice(1).join('=').trim();
 
       // Basic cleanup
-      if (value.startsWith('"') && value.endsWith('"')) {
+      if (typeof value === 'string' && value.startsWith('"') && value.endsWith('"')) {
         value = value.substring(1, value.length - 1);
       } else if (value === 'true') {
-        value = true as any;
+        value = true;
       } else if (value === 'false') {
-        value = false as any;
-      } else if (!isNaN(Number(value))) {
-        value = Number(value) as any;
+        value = false;
+      } else if (typeof value === 'string' && !isNaN(Number(value))) {
+        value = Number(value);
       }
 
       properties[key] = value;

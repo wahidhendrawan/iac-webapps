@@ -25,7 +25,7 @@ export function ConfigurationForm() {
     return PROVIDERS.flatMap((p) => p.resources).find((r) => r.type === selectedResource.type) || null;
   }, [selectedResource]);
 
-  const handleChange = (name: string, value: any) => {
+  const handleChange = (name: string, value: string | boolean | number) => {
     if (selectedResourceId && selectedResourceId !== '__settings__') {
       updateResource(selectedResourceId, { properties: { ...selectedResource?.properties, [name]: value } });
     }
@@ -75,7 +75,7 @@ export function ConfigurationForm() {
 
             {field.type === 'select' ? (
               <select
-                value={selectedResource.properties[field.name] || ''}
+                value={(selectedResource.properties[field.name] as string) ?? ''}
                 onChange={(e) => handleChange(field.name, e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors"
               >
@@ -98,7 +98,7 @@ export function ConfigurationForm() {
               <div className="space-y-2">
                 <input
                   type={field.type === 'number' ? 'number' : 'text'}
-                  value={selectedResource.properties[field.name] || ''}
+                  value={(selectedResource.properties[field.name] as string | number) ?? ''}
                   onChange={(e) => handleChange(field.name, e.target.value)}
                   onFocus={() => setShowRefHelper(field.name)}
                   placeholder={field.placeholder}

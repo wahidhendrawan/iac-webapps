@@ -14,7 +14,7 @@ appVersion: "1.0.0"
   files.push({ filename: 'Chart.yaml', content: chartYaml });
 
   // 2. values.yaml
-  let valuesContent = `# Default values for the chart.
+  const valuesContent = `# Default values for the chart.
 replicaCount: 1
 
 image:

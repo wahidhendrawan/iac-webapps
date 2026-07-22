@@ -1,11 +1,12 @@
 import { useTerraformStore } from '../store';
 import { Rocket, Github, Gitlab, X, AlertTriangle, Terminal, Download } from 'lucide-react';
-import type { CICDProvider } from '../types';
+import type { CICDProvider, TerraformFile } from '../types';
+import type { ElementType } from 'react';
 import JSZip from 'jszip';
 import { generateTerraformFiles } from '../utils/generator';
 import { generatePulumiFiles } from '../utils/pulumiGenerator';
 
-const PROVIDERS: { id: CICDProvider; name: string; description: string; icon: any }[] = [
+const PROVIDERS: { id: CICDProvider; name: string; description: string; icon: ElementType }[] = [
   { id: 'none', name: 'None', description: 'Just download the HCL files.', icon: Rocket },
   { id: 'github', name: 'GitHub Actions', description: 'Generates .github/workflows/iac.yml', icon: Github },
   { id: 'gitlab', name: 'GitLab CI', description: 'Generates .gitlab-ci.yml', icon: Gitlab },
@@ -20,7 +21,7 @@ export function DevOpsSettings({ onClose }: DevOpsSettingsProps) {
 
   const handleDownload = async () => {
     const zip = new JSZip();
-    let files: any[] = [];
+    let files: TerraformFile[] = [];
     
     if (iacTool === 'pulumi') {
         files = generatePulumiFiles(resources);
@@ -28,7 +29,7 @@ export function DevOpsSettings({ onClose }: DevOpsSettingsProps) {
         files = generateTerraformFiles(resources, providerSettings, backend, devopsSettings, iacTool);
     }
 
-    files.forEach((file: any) => {
+    files.forEach((file: TerraformFile) => {
       zip.file(file.filename, file.content);
     });
 

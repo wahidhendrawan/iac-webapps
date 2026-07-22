@@ -14,7 +14,7 @@ export interface ResourceField {
   type: 'text' | 'number' | 'boolean' | 'select' | 'map';
   required: boolean;
   options?: string[]; // For select inputs
-  defaultValue?: any;
+  defaultValue?: string | number | boolean;
   placeholder?: string;
   description?: string;
 }
@@ -31,7 +31,7 @@ export interface Resource {
   id: string;
   type: ResourceType;
   name: string; // The resource name in Terraform (e.g., resource "type" "name")
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
 }
 
 export interface ProviderConfig {
