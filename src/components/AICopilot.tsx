@@ -150,7 +150,7 @@ export function AICopilot() {
         }
 
         setMessages(prev => [...prev, { role: 'assistant', content: aiContent }]);
-    } catch (error) {
+    } catch {
         setMessages(prev => [...prev, { 
             role: 'assistant', 
             content: "Sorry, I couldn't connect to the AI provider. Please check your API key in settings." 

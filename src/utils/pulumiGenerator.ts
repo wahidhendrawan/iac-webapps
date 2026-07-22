@@ -81,7 +81,7 @@ description: A Pulumi TypeScript program
     }
 
     // Convert properties
-    const props: Record<string, any> = {};
+    const props: Record<string, unknown> = {};
     Object.entries(res.properties).forEach(([key, value]) => {
       if (value === undefined || value === null || value === '') return;
       

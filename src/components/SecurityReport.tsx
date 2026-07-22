@@ -2,12 +2,13 @@ import { useTerraformStore } from '../store';
 import { scanResources } from '../utils/securityScanner';
 import { ShieldAlert, X, Info, AlertTriangle, AlertCircle, CheckCircle2 } from 'lucide-react';
 import type { Severity } from '../types';
+import type { ElementType } from 'react';
 
 interface SecurityReportProps {
   onClose: () => void;
 }
 
-const SEVERITY_STYLES: Record<Severity, { bg: string; text: string; icon: any }> = {
+const SEVERITY_STYLES: Record<Severity, { bg: string; text: string; icon: ElementType }> = {
   critical: { bg: 'bg-red-100', text: 'text-red-800', icon: AlertCircle },
   high: { bg: 'bg-orange-100', text: 'text-orange-800', icon: AlertTriangle },
   medium: { bg: 'bg-amber-100', text: 'text-amber-800', icon: Info },

@@ -42,7 +42,7 @@ const RULES: SecurityRule[] = [
   {
       id: 'privileged-instance',
       check: (res) => {
-          if ((res.type === 'aws_instance' || res.type === 'google_compute_instance') && res.properties.instance_type?.includes('large')) {
+          if ((res.type === 'aws_instance' || res.type === 'google_compute_instance') && typeof res.properties.instance_type === 'string' && res.properties.instance_type.includes('large')) {
               return {
                   ruleId: 'privileged-instance',
                   resourceId: res.id,

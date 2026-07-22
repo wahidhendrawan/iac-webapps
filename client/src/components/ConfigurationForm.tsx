@@ -1,33 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useTerraformStore } from '../store';
-import type { ResourceSchema, Resource } from '../types';
 import { PROVIDERS } from '../data/providers';
 import { HelpCircle, Info, Settings } from 'lucide-react';
 
 export function ConfigurationForm() {
   const { resources, selectedResourceId, updateResource } = useTerraformStore();
-  const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
-  const [schema, setSchema] = useState<ResourceSchema | null>(null);
 
-  useEffect(() => {
-    if (selectedResourceId) {
-      const resource = resources.find((r) => r.id === selectedResourceId);
-      if (resource) {
-        setSelectedResource(resource);
-        const provider = PROVIDERS.find(p => p.resources.some(r => r.type === resource.type));
-        const resSchema = provider?.resources.find(r => r.type === resource.type);
-        setSchema(resSchema || null);
-      } else {
-        setSelectedResource(null);
-        setSchema(null);
-      }
-    } else {
-      setSelectedResource(null);
-      setSchema(null);
-    }
-  }, [selectedResourceId, resources]);
+  const selectedResource = useMemo(
+    () => (selectedResourceId ? resources.find((r) => r.id === selectedResourceId) ?? null : null),
+    [selectedResourceId, resources]
+  );
 
-  const handleChange = (name: string, value: any) => {
+  const schema = useMemo(() => {
+    if (!selectedResource) return null;
+    const provider = PROVIDERS.find(p => p.resources.some(r => r.type === selectedResource.type));
+    return provider?.resources.find(r => r.type === selectedResource.type) ?? null;
+  }, [selectedResource]);
+
+  const handleChange = (name: string, value: string | boolean | number) => {
     if (selectedResourceId) {
       updateResource(selectedResourceId, { properties: { ...selectedResource?.properties, [name]: value } });
     }
