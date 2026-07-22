@@ -1,17 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useTerraformStore } from './store';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { ConfigurationForm } from './components/ConfigurationForm';
-import { CodePreview } from './components/CodePreview';
 import { BackendSettings } from './components/BackendSettings';
 import { TemplateGallery } from './components/TemplateGallery';
 import { VisualDesigner } from './components/VisualDesigner';
 import { DevOpsSettings } from './components/DevOpsSettings';
 import { About } from './components/About';
 import { SecurityReport } from './components/SecurityReport';
-import { AICopilot } from './components/AICopilot';
 import { Layout as LayoutIcon, Settings as SettingsIcon } from 'lucide-react';
+
+const CodePreview = lazy(() => import('./components/CodePreview').then(m => ({ default: m.CodePreview })));
+const AICopilot = lazy(() => import('./components/AICopilot').then(m => ({ default: m.AICopilot })));
+
+const CodePreviewFallback = () => (
+  <div className="flex-1 flex items-center justify-center text-gray-400 dark:text-slate-500 text-sm">
+    Loading code preview...
+  </div>
+);
 
 function App() {
   const { theme, selectedResourceId } = useTerraformStore();
@@ -100,7 +107,9 @@ function App() {
                     <>
                         <ConfigurationForm />
                         <div className="w-1/3 min-w-[300px] max-w-[500px] border-l border-gray-200 dark:border-slate-800 hidden xl:block h-full">
-                            <CodePreview onOpenSecurity={() => setShowSecurity(true)} />
+                            <Suspense fallback={<CodePreviewFallback />}>
+                                <CodePreview onOpenSecurity={() => setShowSecurity(true)} />
+                            </Suspense>
                         </div>
                     </>
                 ) : (
@@ -112,14 +121,18 @@ function App() {
                             </div>
                         )}
                         <div className="w-1/4 min-w-[250px] max-w-[400px] border-l border-gray-200 dark:border-slate-800 hidden 2xl:block h-full">
-                            <CodePreview onOpenSecurity={() => setShowSecurity(true)} />
+                            <Suspense fallback={<CodePreviewFallback />}>
+                                <CodePreview onOpenSecurity={() => setShowSecurity(true)} />
+                            </Suspense>
                         </div>
                     </>
                 )}
             </div>
         </main>
       </div>
-      <AICopilot />
+      <Suspense fallback={null}>
+        <AICopilot />
+      </Suspense>
     </div>
   );
 }
