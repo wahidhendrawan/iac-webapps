@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IaC WebApps — Visual Infrastructure as Code Designer</title>
+<meta name="description" content="Visual multi-tool platform for generating Terraform, OpenTofu, Pulumi, and Helm code with drag-and-drop design, cost estimation, and AI assistance.">
+<style>
+  :root {
+    --bg: #0b1020; --card: #121a33; --text: #e6e9f5; --muted: #9aa4c4;
+    --accent: #7c5cff; --accent2: #22c55e; --border: #22305c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(180deg, #0b1020 0%, #120e30 100%); color: var(--text);
+    line-height: 1.6;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 48px 24px 96px; }
+  header { text-align: center; margin-bottom: 48px; }
+  .badge {
+    display: inline-block; background: var(--card); border: 1px solid var(--border);
+    color: var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 13px;
+    margin-bottom: 16px; font-weight: 600;
+  }
+  h1 { font-size: 2.4rem; margin: 0 0 12px; letter-spacing: -0.02em; }
+  .tagline { color: var(--muted); font-size: 1.15rem; max-width: 640px; margin: 0 auto; }
+  .cta-row { display: flex; gap: 12px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px;
+    border-radius: 10px; font-weight: 600; text-decoration: none; font-size: 0.95rem;
+    transition: transform 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+  .notice {
+    background: rgba(124, 92, 255, 0.08); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 20px; margin: 32px 0; font-size: 0.92rem; color: var(--muted);
+  }
+  .notice strong { color: var(--text); }
+  section { margin: 56px 0; }
+  h2 { font-size: 1.5rem; margin-bottom: 20px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 20px 22px;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 1rem; color: var(--accent); }
+  .card p { margin: 0; font-size: 0.92rem; color: var(--muted); }
+  code {
+    background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px;
+    font-size: 0.85em; font-family: 'SF Mono', Consolas, monospace;
+  }
+  pre {
+    background: #080c1a; border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px 18px; overflow-x: auto; font-size: 0.85rem;
+  }
+  .stack-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .tag {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; color: var(--muted);
+  }
+  .providers { display: flex; gap: 8px; flex-wrap: wrap; }
+  .provider {
+    background: rgba(124,92,255,0.08); border: 1px solid var(--border);
+    padding: 6px 14px; border-radius: 8px; font-size: 0.85rem;
+  }
+  footer { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 64px; }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="badge">🏗️ Infrastructure as Code</span>
+    <h1>IaC WebApps</h1>
+    <p class="tagline">A visual platform for designing infrastructure and generating production-ready Terraform, OpenTofu, Pulumi, or Helm code — with drag-and-drop design, cost estimation, and AI-assisted workflows.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://github.com/wahidhendrawan/iac-webapps">View on GitHub</a>
+      <a class="btn btn-secondary" href="https://github.com/wahidhendrawan/iac-webapps#-getting-started">Quick Start</a>
+    </div>
+  </header>
+
+  <div class="notice">
+    <strong>ℹ️ This is a documentation page, not a live demo.</strong> The visual designer needs to persist local state and call third-party AI/pricing APIs, so it's best run locally rather than as a static demo. Spin it up with Docker in under a minute — see below.
+  </div>
+
+  <section>
+    <h2>Key Features</h2>
+    <div class="grid">
+      <div class="card"><h3>Multi-Tool Support</h3><p>Switch seamlessly between Terraform, OpenTofu, Pulumi (TypeScript), and Helm Charts.</p></div>
+      <div class="card"><h3>AI Copilot</h3><p>Natural-language assistant (DeepSeek-V3 / GPT-4o) that adds resources to your design automatically.</p></div>
+      <div class="card"><h3>Visual Designer</h3><p>Drag-and-drop canvas powered by React Flow with synchronized editing and dependency mapping.</p></div>
+      <div class="card"><h3>Cost Estimator</h3><p>Real-time hourly/daily/monthly cost breakdown with live USD → IDR conversion.</p></div>
+      <div class="card"><h3>Architecture Templates</h3><p>Pre-configured blueprints — 3-Tier Network, Hybrid Cloud, Kubernetes Stack.</p></div>
+      <div class="card"><h3>Security Scanner</h3><p>Static analysis flags misconfigurations (public S3 buckets, open SSH ports) before deploy.</p></div>
+      <div class="card"><h3>HCL Importer</h3><p>Reverse-engineer existing Terraform <code>.tf</code> files into visual diagrams instantly.</p></div>
+      <div class="card"><h3>Advanced Logic</h3><p>Modules, remote state backends, and resource dependency chains.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Supported Providers</h2>
+    <div class="providers">
+      <span class="provider">AWS</span><span class="provider">Azure</span><span class="provider">Google Cloud</span>
+      <span class="provider">Alibaba Cloud</span><span class="provider">Huawei Cloud</span><span class="provider">Kubernetes</span>
+      <span class="provider">VMware vSphere</span><span class="provider">Proxmox VE</span><span class="provider">Sangfor HCI</span>
+      <span class="provider">Local Filesystem</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Run it locally</h2>
+    <pre><code>git clone https://github.com/wahidhendrawan/iac-webapps.git
+cd iac-webapps
+docker compose up -d --build</code></pre>
+    <p style="color:var(--muted); font-size:0.9rem;">Open <code>http://localhost:8088</code>. Alternatively run with Node.js 20+ and <code>npm install && npm run dev</code>.</p>
+  </section>
+
+  <section>
+    <h2>Tech Stack</h2>
+    <div class="stack-tags">
+      <span class="tag">React 19</span><span class="tag">TypeScript</span><span class="tag">@xyflow/react</span>
+      <span class="tag">Zustand</span><span class="tag">Tailwind CSS</span><span class="tag">DeepSeek API</span>
+      <span class="tag">OpenAI API</span><span class="tag">Vite</span><span class="tag">Docker</span>
+    </div>
+  </section>
+
+  <footer>
+    Built by <a href="https://github.com/wahidhendrawan">Wahid Hendrawan</a> · GPL-3.0 Licensed · <a href="https://github.com/wahidhendrawan/iac-webapps">Source on GitHub</a>
+  </footer>
+</div>
+</body>
+</html>
