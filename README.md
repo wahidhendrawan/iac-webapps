@@ -2,22 +2,41 @@
 
 # IaC WebApps (v1.7.0)
 
-A powerful, multi-tool visual platform for generating and managing Infrastructure as Code (IaC) configurations. Design your infrastructure visually and instantly generate production-ready code for **Terraform, OpenTofu, Pulumi, or Helm Charts**.
-
 [![Project Status](https://img.shields.io/badge/status-active-emerald.svg)]()
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)](tsconfig.json)
+[![React](https://img.shields.io/badge/React%2019-61DAFB?logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite)](vite.config.ts)
+[![Tailwind](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?logo=tailwindcss)](tailwind.config.js)
+[![Docker](https://img.shields.io/badge/docker-compose%20ready-2496ED?logo=docker&logoColor=white)](docker-compose.yml)
 [![Creator](https://img.shields.io/badge/created%20by-Wahid%20Hendrawan-indigo.svg)](https://wahidhendrawan.onrender.com/)
+[![GitHub last commit](https://img.shields.io/github/last-commit/wahidhendrawan/iac-webapps)](https://github.com/wahidhendrawan/iac-webapps/commits/main)
+
+A powerful, multi-tool visual platform for generating and managing Infrastructure as Code (IaC) configurations. Design your infrastructure visually and instantly generate production-ready code for **Terraform, OpenTofu, Pulumi, or Helm Charts**.
+
+## 🖼️ Screenshots
+
+| Screen | Description |
+|--------|-------------|
+| **Visual Designer** | Drag-and-drop canvas with React Flow — add AWS, Azure, GCP, K8s, On-Prem resources visually |
+| **AI Copilot** | Describe infrastructure in natural language — DeepSeek-V3 / GPT-4o generates resources automatically |
+| **Cost Estimator** | Real-time cost breakdown with USD ↔ IDR conversion and per-resource pricing |
+| **Security Scanner** | DevSecOps static analysis — find public S3, open SSH, hardcoded secrets before deploy |
+| **Template Library** | Pre-configured blueprints: 3-Tier Network, Hybrid Cloud, Kubernetes Stack |
 
 ## 🚀 Key Features
 
-*   **Multi-Tool Support**: Seamlessly switch between **Terraform**, **OpenTofu**, **Pulumi (TypeScript)**, and **Helm Charts**.
-*   **DeepSeek AI Assistant**: Intelligent Copilot that can understand natural language and automatically add resources to your project using **DeepSeek-V3** or **GPT-4o**.
-*   **Real-Time Cost Estimator**: Track your infrastructure spending with a breakdown of hourly, daily, and monthly costs, featuring **real-time USD to IDR currency conversion**.
-*   **Visual Designer (Drag & Drop)**: Interactive canvas powered by **React Flow** with synchronized editing and automated relationship mapping.
-*   **Architecture Templates**: Start fast with pre-configured blueprints (e.g., 3-Tier Network, Hybrid Cloud, K8s Stack).
-*   **HCL Importer**: Reverse engineer existing Terraform `.tf` files into visual diagrams instantly.
-*   **DevSecOps Security Scanner**: Real-time static analysis to detect vulnerabilities (e.g., public S3 buckets, open SSH ports) before deployment.
-*   **Advanced Logic**: Support for Modules, Remote State Backends, and Resource Dependencies.
+| Feature | Description |
+|---|---|
+| 🎨 **Visual Designer** | Interactive drag-and-drop canvas with React Flow — synchronized code/view/edit |
+| 🔧 **Multi-IaC Export** | Generate Terraform, OpenTofu, Pulumi (TypeScript), or Helm Charts from one design |
+| 🤖 **AI Copilot** | DeepSeek-V3 / GPT-4o integration — describe infra in natural language |
+| 💰 **Cost Estimator** | Real-time pricing with hourly/daily/monthly breakdown + USD ↔ IDR conversion |
+| 📚 **Template Library** | Start fast with 3-Tier Network, Hybrid Cloud, K8s Stack blueprints |
+| 🔄 **HCL Importer** | Reverse-engineer existing `.tf` files into visual diagrams |
+| 🔒 **DevSecOps Scanner** | Real-time static analysis — public S3, open SSH, secrets detection |
+| 🧩 **Advanced Logic** | Modules, Remote State Backends, Resource Dependencies |
+| ☁️ **Multi-Cloud** | AWS, Azure, GCP, Alibaba, Huawei, K8s, VMware vSphere, Proxmox VE, Sangfor HCI |
 
 ## 🛠 Supported Providers
 
@@ -25,6 +44,41 @@ A powerful, multi-tool visual platform for generating and managing Infrastructur
 *   **Container/K8s**: Kubernetes (Deployments, Services, Helm).
 *   **On-Premise/Hybrid**: VMware vSphere, Proxmox VE, Sangfor HCI.
 *   **Local**: Local File System management.
+
+## 🗺️ Roadmap
+
+- ✅ Drag-and-drop visual designer with React Flow
+- ✅ Multi-IaC export (Terraform, OpenTofu, Pulumi, Helm)
+- ✅ AI Copilot (DeepSeek-V3 / GPT-4o)
+- ✅ Real-time cost estimator
+- ✅ HCL reverse-engineering importer
+- ✅ DevSecOps security scanner
+- ⬜ **Live Terraform Plan Diff** — preview resource changes before applying
+- ⬜ **GitHub Actions CI integration** — auto-Terraform plan on PR
+- ⬜ **GitLab CI / Bitbucket Pipelines export**
+- ⬜ **Terraform Cloud API integration** — remote state + runs
+- ⬜ **Multi-user collaboration** — shared workspaces with real-time sync
+- ⬜ **Export to CDK (AWS CDK, CDKTF)**
+
+## ⚙️ Architecture
+
+```text
+Browser ──▶ Nginx :8088 ──▶ Vite Dev Server / Static SPA
+                │
+                └── /api proxy ──▶ (Future: IaC generation API)
+```
+
+Built entirely as a client-side SPA: no backend dependencies for core functionality.
+IaC generation, cost estimation, and security scanning run in-browser.
+
+## 🔌 Integration Roadmap
+
+| Integration | Status | Description |
+|---|---|---|
+| GitHub Actions | ⬜ Planned | Auto-generate Terraform plan on every PR |
+| GitLab CI | ⬜ Planned | IaC pipeline templates |
+| Terraform Cloud | ⬜ Planned | Remote state + API-driven runs |
+| Pulumi Cloud | ⬜ Planned | Deployment tokens + stack management |
 
 ## 📦 Getting Started
 
