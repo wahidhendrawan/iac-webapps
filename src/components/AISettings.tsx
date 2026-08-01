@@ -1,5 +1,5 @@
 import { useTerraformStore } from '../store';
-import { Bot, Key, Shield, X, ExternalLink, Info } from 'lucide-react';
+import { Bot, Key, Shield, X, ExternalLink, Info, AlertTriangle } from 'lucide-react';
 import type { AIProvider } from '../types';
 
 interface AISettingsProps {
@@ -99,7 +99,7 @@ export function AISettings({ onClose }: AISettingsProps) {
                         className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
                     />
                 </div>
-                <p className="mt-2 text-xs text-gray-400">Your API key is stored locally in your browser and is only used to communicate with the AI provider.</p>
+                <p className="mt-2 text-xs text-gray-400">Your API key is kept in memory for this browser session only and is discarded on reload. It is used exclusively to call the selected provider.</p>
               </div>
             </div>
             
@@ -107,6 +107,13 @@ export function AISettings({ onClose }: AISettingsProps) {
               <Shield className="w-5 h-5 text-amber-600 dark:text-amber-500 flex-shrink-0" />
               <div className="text-sm text-amber-800 dark:text-amber-400">
                 <strong>Privacy Note:</strong> Using external AI providers will send your current infrastructure metadata to their servers for processing.
+              </div>
+            </div>
+
+            <div className="mt-4 p-4 bg-red-50 dark:bg-red-900/10 rounded-lg border border-red-100 dark:border-red-900/20 flex gap-3">
+              <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-500 flex-shrink-0" />
+              <div className="text-sm text-red-800 dark:text-red-400">
+                <strong>Security Notice:</strong> The API key is held in memory only for this browser tab and is not saved to storage. Re-enter it after reload. For production, prefer a backend proxy that keeps the key server-side.
               </div>
             </div>
           </section>

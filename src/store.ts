@@ -6,6 +6,24 @@ import { PROVIDERS } from './data/providers';
 
 import { ARCHITECTURE_TEMPLATES, prepareTemplateResources } from './data/templates';
 
+const SENSITIVE_SETTING_KEY = /(?:password|secret|token|api[_-]?key|access[_-]?key|private[_-]?key)/i;
+
+/**
+ * Keep project configuration available after reload without persisting cloud
+ * credentials or AI keys in browser storage. Values removed here remain only
+ * in the current in-memory session.
+ */
+function stripSensitiveProviderSettings(settings: AllProviderSettings): AllProviderSettings {
+  return Object.fromEntries(
+    Object.entries(settings).map(([provider, values]) => [
+      provider,
+      Object.fromEntries(
+        Object.entries(values ?? {}).filter(([key]) => !SENSITIVE_SETTING_KEY.test(key)),
+      ),
+    ]),
+  ) as AllProviderSettings;
+}
+
 interface TerraformState {
   resources: Resource[];
   selectedResourceId: string | null;
@@ -41,10 +59,10 @@ export const useTerraformStore = create<TerraformState>()(
         azure: {},
         google: { project: 'my-project-id', region: 'us-central1' },
         vsphere: {
-          vsphere_server: 'vcenter.example.com',
-          user: 'administrator@vsphere.local',
-          password: 'password',
-          allow_unverified_ssl: true
+          vsphere_server: '',
+          user: '',
+          password: '',
+          allow_unverified_ssl: false
         },
         local: {},
         proxmox: {},
@@ -177,6 +195,12 @@ export const useTerraformStore = create<TerraformState>()(
     {
       name: 'iac-webapps-storage',
       storage: createJSONStorage(() => localStorage),
+      // Never persist secrets (provider credentials, AI API keys) to disk.
+      partialize: (state) => ({
+        ...state,
+        providerSettings: stripSensitiveProviderSettings(state.providerSettings),
+        aiSettings: { ...state.aiSettings, apiKey: '' },
+      }),
     }
   )
 );
