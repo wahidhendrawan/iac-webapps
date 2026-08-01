@@ -1,5 +1,5 @@
 # Build Stage
-FROM public.ecr.aws/docker/library/node:26-alpine@sha256:221f4d1edb150c0ddf3c61c1f053cd3a59ee0fe42f54cb687a7db24e97da6c46 AS build
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ COPY . .
 RUN npm run build
 
 # Production Stage
-FROM public.ecr.aws/nginx/nginx:alpine@sha256:238132c0a2231df8741a1dc77b362584b8a2169050686d85968aebc24fb9a71d AS runtime
+FROM nginx:alpine AS runtime
 
 # Nginx listens on an unprivileged port and writes its pid/cache under /tmp.
 # This permits a non-root runtime without granting extra capabilities.
