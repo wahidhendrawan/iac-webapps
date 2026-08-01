@@ -1,4 +1,5 @@
 [![CI](https://github.com/wahidhendrawan/iac-webapps/actions/workflows/ci.yml/badge.svg)](https://github.com/wahidhendrawan/iac-webapps/actions/workflows/ci.yml)
+[![Coverage threshold](https://img.shields.io/badge/coverage%20threshold-70%25-brightgreen)](vitest.config.ts)
 
 # IaC WebApps (v1.7.0)
 
