@@ -43,141 +43,99 @@ jobs:
       - name: Scan local IaC files for security issues
         id: scan-iac
         run: |
-          # Scan for IaC files in the repository
-          TERRAFORM_FILES=$(find . -type f \( -name "*.tf" -o -name "*.tfvars" \) 2>/dev/null || true)
-          
-          if [ -z "$TERRAFORM_FILES" ]; then
-            echo "No Terraform files found; generating empty SARIF with placeholder."
-            mkdir -p sarif-results
-            cat > sarif-results/iac-security.sarif << 'EOF'
-{
-  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
-  "version": "2.1.0",
-  "runs": [
-    {
-      "tool": {
-        "driver": {
-          "name": "iac-security-scanner",
-          "version": "1.0.0",
-          "informationUri": "https://github.com/wahidhendrawan/iac-webapps",
-          "rules": [
-            {
-              "id": "no-iac-files",
-              "name": "No IaC Files",
-              "description": {
-                "text": "Repository contains no Terraform files to scan."
-              },
-              "properties": {
-                "category": "IaC",
-                "securitySeverity": "low",
-                "precision": "high"
-              }
-            }
-          ]
-        }
-      },
-      "artifacts": [],
-      "results": []
-    }
-  ]
-}
-EOF
-            echo "sarif_path=sarif-results/iac-security.sarif" >> $GITHUB_OUTPUT
-            exit 0
+          set -euo pipefail
+          mkdir -p sarif-results
+          OUT=sarif-results/iac-security.sarif
+
+          # Rules catalog shared by all runs.
+          RULES='[
+            {"id":"s3-public-access","name":"S3 Public Access","shortDescription":{"text":"S3 bucket has public read/write access."},"properties":{"category":"Security","security-severity":"8.0","precision":"high"}},
+            {"id":"unencrypted-s3","name":"Unencrypted S3 Bucket","shortDescription":{"text":"S3 bucket might be missing encryption."},"properties":{"category":"Security","security-severity":"5.0","precision":"high"}},
+            {"id":"no-iac-files","name":"No IaC Files","shortDescription":{"text":"Repository contains no Terraform files to scan."},"properties":{"category":"IaC","security-severity":"1.0","precision":"high"}}
+          ]'
+
+          # Collect Terraform files (space/newline safe).
+          mapfile -t TERRAFORM_FILES < <(find . -type f \( -name "*.tf" -o -name "*.tfvars" \) 2>/dev/null || true)
+
+          RESULTS='[]'
+
+          if [ "${#TERRAFORM_FILES[@]}" -eq 0 ]; then
+            echo "No Terraform files found; emitting placeholder result."
+            RESULTS=$(jq -n '[{
+              ruleId: "no-iac-files",
+              level: "note",
+              message: { text: "Repository contains no Terraform files to scan." },
+              locations: [{
+                physicalLocation: {
+                  artifactLocation: { uri: "." },
+                  region: { startLine: 1, startColumn: 1 }
+                }
+              }]
+            }]')
+          else
+            for tf_file in "${TERRAFORM_FILES[@]}"; do
+              [ -f "$tf_file" ] || continue
+              rel="${tf_file#./}"
+
+              # S3 public access.
+              if grep -Eq 'acl[[:space:]]*=[[:space:]]*["'"'"']public-read' "$tf_file" 2>/dev/null; then
+                echo "Found S3 public access in $tf_file"
+                RESULTS=$(printf '%s' "$RESULTS" | jq --arg file "$rel" '. += [{
+                  ruleId: "s3-public-access",
+                  level: "error",
+                  message: { text: "S3 bucket has public read access." },
+                  locations: [{
+                    physicalLocation: {
+                      artifactLocation: { uri: $file },
+                      region: { startLine: 1, startColumn: 1 }
+                    }
+                  }]
+                }]')
+              fi
+
+              # S3 without encryption.
+              if grep -q 'resource "aws_s3_bucket"' "$tf_file" 2>/dev/null \
+                 && ! grep -q 'server_side_encryption_configuration' "$tf_file" 2>/dev/null; then
+                echo "Found S3 without encryption in $tf_file"
+                RESULTS=$(printf '%s' "$RESULTS" | jq --arg file "$rel" '. += [{
+                  ruleId: "unencrypted-s3",
+                  level: "warning",
+                  message: { text: "S3 bucket might be missing server-side encryption." },
+                  locations: [{
+                    physicalLocation: {
+                      artifactLocation: { uri: $file },
+                      region: { startLine: 1, startColumn: 1 }
+                    }
+                  }]
+                }]')
+              fi
+            done
           fi
 
-          # For each .tf file found, check for common security misconfigurations
-          mkdir -p sarif-results
-          SARIF_RESULTS='[]'
-          RULE_ID=0
-
-          for tf_file in $TERRAFORM_FILES; do
-            if [ ! -f "$tf_file" ]; then continue; fi
-            
-            # Check for S3 public access
-            if grep -q 'acl.*=.*"public-read"' "$tf_file" 2>/dev/null || grep -q "acl.*=.*'public-read'" "$tf_file" 2>/dev/null; then
-              echo "Found S3 public access in $tf_file"
-              SARIF_RESULTS=$(echo "$SARIF_RESULTS" | jq --arg file "$tf_file" '. += [{
-                "ruleId": "s3-public-access",
-                "level": "error",
-                "message": { "text": "S3 bucket has public read access." },
-                "locations": [{
-                  "physicalLocation": {
-                    "artifactLocation": { "uri": "$tf_file" },
-                    "region": { "startLine": 1, "startColumn": 1 }
+          # Assemble the final SARIF document with jq so it is always valid.
+          jq -n \
+            --argjson rules "$RULES" \
+            --argjson results "$RESULTS" \
+            '{
+              "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+              version: "2.1.0",
+              runs: [{
+                tool: {
+                  driver: {
+                    name: "iac-security-scanner",
+                    version: "1.0.0",
+                    informationUri: "https://github.com/wahidhendrawan/iac-webapps",
+                    rules: $rules
                   }
-                }],
-                "fixes": [{
-                  "description": { "text": "Set ACL to \"private\" unless public access is explicitly required." },
-                  "artifactChanges": []
-                }]
-              }]')
-              RULE_ID=$((RULE_ID + 1))
-            fi
+                },
+                artifacts: [],
+                results: $results
+              }]
+            }' > "$OUT"
 
-            # Check for S3 without encryption
-            if ! grep -q 'server_side_encryption_configuration' "$tf_file" 2>/dev/null && grep -q 'resource "aws_s3_bucket"' "$tf_file" 2>/dev/null; then
-              echo "Found S3 without encryption in $tf_file"
-              SARIF_RESULTS=$(echo "$SARIF_RESULTS" | jq --arg file "$tf_file" '. += [{
-                "ruleId": "unencrypted-s3",
-                "level": "warning",
-                "message": { "text": "S3 bucket might be missing server-side encryption." },
-                "locations": [{
-                  "physicalLocation": {
-                    "artifactLocation": { "uri": "$tf_file" },
-                    "region": { "startLine": 1, "startColumn": 1 }
-                  }
-                }],
-                "fixes": [{
-                  "description": { "text": "Enable default server-side encryption for the S3 bucket." },
-                  "artifactChanges": []
-                }]
-              }]')
-              RULE_ID=$((RULE_ID + 1))
-            fi
-          done
-
-          # Generate SARIF with actual findings
-          cat > sarif-results/iac-security.sarif << EOF
-{
-  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
-  "version": "2.1.0",
-  "runs": [
-    {
-      "tool": {
-        "driver": {
-          "name": "iac-security-scanner",
-          "version": "1.0.0",
-          "informationUri": "https://github.com/wahidhendrawan/iac-webapps",
-          "rules": [
-            {
-              "id": "s3-public-access",
-              "name": "S3 Public Access",
-              "description": { "text": "S3 bucket has public read/write access." },
-              "properties": { "category": "Security", "securitySeverity": "high", "precision": "high" }
-            },
-            {
-              "id": "unencrypted-s3",
-              "name": "Unencrypted S3 Bucket",
-              "description": { "text": "S3 bucket might be missing encryption." },
-              "properties": { "category": "Security", "securitySeverity": "medium", "precision": "high" }
-            },
-            {
-              "id": "no-iac-files",
-              "name": "No IaC Files",
-              "description": { "text": "Repository contains no Terraform files to scan." },
-              "properties": { "category": "IaC", "securitySeverity": "low", "precision": "high" }
-            }
-          ]
-        }
-      },
-      "artifacts": [],
-      "results": $(echo "$SARIF_RESULTS")
-    }
-  ]
-}
-EOF
-          echo "sarif_path=sarif-results/iac-security.sarif" >> $GITHUB_OUTPUT
+          echo "Generated SARIF:"
+          jq '.runs[0].results | length' "$OUT"
+          echo "sarif_path=$OUT" >> "$GITHUB_OUTPUT"
 
       - name: Upload SARIF to GitHub Security
         if: steps.scan-iac.outputs.sarif_path != ''
