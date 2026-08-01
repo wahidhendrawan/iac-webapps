@@ -7,6 +7,11 @@ updates:
       day: monday
     open-pull-requests-limit: 3
     # No grouping - individual PRs prevent conflicts and allow granular review
+    ignore:
+      - dependency-name: ip-address
+        # Bundled within npm itself; cannot be updated directly.
+      - dependency-name: npm
+        # npm is a tool bundled with Node.js, not a library dependency.
 
   - package-ecosystem: docker
     directory: /
