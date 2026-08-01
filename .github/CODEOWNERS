@@ -1,0 +1,29 @@
+# CODEOWNERS for iac-webapps
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything
+*                       @wahidhendrawan
+
+# Frontend components
+/src/components/        @wahidhendrawan
+/src/utils/             @wahidhendrawan
+
+# Security scanner core
+/src/utils/security.ts          @wahidhendrawan
+/src/utils/securityScanner.ts   @wahidhendrawan
+/src/utils/sarifExport.ts       @wahidhendrawan
+
+# Data and types
+/src/data/              @wahidhendrawan
+/src/types.ts           @wahidhendrawan
+
+# CI, tooling, governance
+/.github/               @wahidhendrawan
+/Dockerfile             @wahidhendrawan
+/nginx.conf             @wahidhendrawan
+
+# Core documentation
+/README.md              @wahidhendrawan
+/CONTRIBUTING.md        @wahidhendrawan
+/SECURITY.md            @wahidhendrawan
+/CODE_OF_CONDUCT.md     @wahidhendrawan
