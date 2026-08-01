@@ -1,6 +1,7 @@
 import { useTerraformStore } from '../store';
 import { scanResources } from '../utils/securityScanner';
-import { ShieldAlert, X, Info, AlertTriangle, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { generateSarif, formatSarifStats } from '../utils/sarifExport';
+import { ShieldAlert, X, Info, AlertTriangle, AlertCircle, CheckCircle2, Download } from 'lucide-react';
 import type { Severity } from '../types';
 import type { ElementType } from 'react';
 
@@ -18,6 +19,22 @@ const SEVERITY_STYLES: Record<Severity, { bg: string; text: string; icon: Elemen
 export function SecurityReport({ onClose }: SecurityReportProps) {
   const { resources } = useTerraformStore();
   const findings = scanResources(resources);
+
+  const downloadSarif = () => {
+    const sarifOutput = generateSarif(findings, {
+      runName: 'iac-webapps-security-scan',
+      toolVersion: '1.0.0',
+    });
+    const blob = new Blob([JSON.stringify(sarifOutput, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `sarif-report-${new Date().toISOString().slice(0, 10)}.sarif`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[85vh]">
@@ -80,13 +97,27 @@ export function SecurityReport({ onClose }: SecurityReportProps) {
         )}
       </div>
 
-      <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end">
-        <button
-          onClick={onClose}
-          className="px-6 py-2 bg-indigo-900 text-white rounded-lg font-semibold hover:bg-indigo-950 transition-all"
-        >
-          Close Report
-        </button>
+      <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-between items-center">
+        <div className="text-xs text-gray-500">
+          {findings.length > 0 && formatSarifStats(findings)}
+        </div>
+        <div className="flex gap-3">
+          {findings.length > 0 && (
+            <button
+              onClick={downloadSarif}
+              className="px-4 py-2 border border-indigo-300 text-indigo-700 rounded-lg font-semibold hover:bg-indigo-50 transition-all flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Export SARIF
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            className="px-6 py-2 bg-indigo-900 text-white rounded-lg font-semibold hover:bg-indigo-950 transition-all"
+          >
+            Close Report
+          </button>
+        </div>
       </div>
     </div>
   );
