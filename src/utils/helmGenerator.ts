@@ -1,5 +1,8 @@
 import type { Resource, TerraformFile } from '../types';
 
+// JSON strings are valid YAML double-quoted scalars; {{ is escaped so Helm renders it literally.
+const yamlString = (value: unknown) => JSON.stringify(String(value)).replace(/\{\{/g, '{{"{{"}}');
+
 export function generateHelmFiles(resources: Resource[]): TerraformFile[] {
   const files: TerraformFile[] = [];
 
@@ -71,7 +74,7 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: ${res.properties.app_label || 'my-app'}
+    app: ${yamlString(res.properties.app_label || 'my-app')}
 `;
        files.push({ filename: `templates/service-${res.name}.yaml`, content: svcYaml });
     }

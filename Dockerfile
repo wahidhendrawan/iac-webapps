@@ -1,5 +1,5 @@
 # Build Stage
-FROM node:22-alpine AS build
+FROM node:22-alpine@sha256:fe4f6d74e20370acb04ad889077d14d0f64a9c8ea6a42bc60cddf1e844699914 AS build
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ COPY . .
 RUN npm run build
 
 # Production Stage
-FROM nginx:alpine AS runtime
+FROM nginx:1.31.8-alpine@sha256:785835ea65db4bba6f021acc0f3be91b0fef76a53fe41f8588c6698d2aed0606 AS runtime
 
 # Nginx listens on an unprivileged port and writes its pid/cache under /tmp.
 # This permits a non-root runtime without granting extra capabilities.

@@ -1,5 +1,26 @@
 import type { Resource, AllProviderSettings, ProviderType, TerraformFile, BackendConfig, DevOpsSettings, IaCTool } from '../types';
 import { PROVIDERS } from '../data/providers';
+import { sanitizeHclString } from './security';
+
+// Bare HCL references: var.x, local.x, module.x.out, <type>.<name>.<attr>. Anything else is a quoted string.
+const HCL_REFERENCE = /^(?:(?:var|local)\.[A-Za-z_][\w-]*|(?:module|[a-z][a-z0-9]*_[a-z0-9_]+)\.[A-Za-z_][\w-]*\.[A-Za-z_]\w*)$/;
+const SENSITIVE_KEYS = ['password', 'secret', 'token', 'key', 'access_key', 'secret_key'];
+const isSensitiveKey = (key: string) => SENSITIVE_KEYS.some(s => key.toLowerCase().includes(s));
+
+function formatHclValue(value: unknown): string {
+  if (typeof value !== 'string') return String(value);
+  if (HCL_REFERENCE.test(value)) return value;
+  try {
+    // List fields (e.g. VPC module azs) hold JSON arrays of strings: emit them as HCL lists.
+    const parsed: unknown = JSON.parse(value);
+    if (Array.isArray(parsed) && parsed.every(v => typeof v === 'string')) {
+      return `[${parsed.map(v => `"${sanitizeHclString(v)}"`).join(', ')}]`;
+    }
+  } catch {
+    // Not JSON: a plain string.
+  }
+  return `"${sanitizeHclString(value)}"`;
+}
 
 export function generateHCL(resources: Resource[], providerSettings: AllProviderSettings, backend: BackendConfig | null = null, devopsSettings?: DevOpsSettings, iacTool: IaCTool = 'terraform'): string {
   const files = generateTerraformFiles(resources, providerSettings, backend, devopsSettings, iacTool);
@@ -53,7 +74,7 @@ export function generateTerraformFiles(
     versionsContent += `  backend "${backend.type}" {\n`;
     Object.entries(backend.properties).forEach(([key, value]) => {
       if (value !== undefined && value !== '') {
-        const formattedValue = typeof value === 'string' ? `"${value}"` : value;
+        const formattedValue = typeof value === 'string' ? `"${sanitizeHclString(value)}"` : value;
         versionsContent += `    ${key} = ${formattedValue}\n`;
       }
     });
@@ -89,13 +110,8 @@ export function generateTerraformFiles(
     const settings = providerSettings[p];
     Object.entries(settings).forEach(([key, value]) => {
       if (value !== undefined && value !== '') {
-        if (key === 'allow_unverified_ssl') {
-           providerContent += `  allow_unverified_ssl = ${value}\n`;
-        } else if (typeof value === 'string' && !value.startsWith('var.')) {
-           providerContent += `  ${key} = "${value}"\n`;
-        } else {
-           providerContent += `  ${key} = ${value}\n`;
-        }
+        // Credentials live only in terraform.tfvars (gitignored), behind sensitive variables.
+        providerContent += `  ${key} = ${isSensitiveKey(key) ? `var.${p}_${key}` : formatHclValue(value)}\n`;
       }
     });
     providerContent += '}\n\n';
@@ -104,14 +120,12 @@ export function generateTerraformFiles(
 
   let variablesContent = '';
   let tfvarsContent = '';
-  const sensitiveKeys = ['password', 'secret', 'token', 'key', 'access_key', 'secret_key'];
   activeProviders.forEach(p => {
       const settings = providerSettings[p];
       Object.entries(settings).forEach(([key, value]) => {
         if (value !== undefined && value !== '') {
-            const isSensitive = sensitiveKeys.some(s => key.toLowerCase().includes(s));
-            variablesContent += `variable "${p}_${key}" {\n  type = string\n${isSensitive ? '  sensitive = true\n' : ''}}\n\n`;
-            tfvarsContent += `${p}_${key} = "${value}"\n`;
+            variablesContent += `variable "${p}_${key}" {\n  type = string\n${isSensitiveKey(key) ? '  sensitive = true\n' : ''}}\n\n`;
+            tfvarsContent += `${p}_${key} = "${sanitizeHclString(String(value))}"\n`;
         }
       });
   });
@@ -140,14 +154,7 @@ export function generateTerraformFiles(
           mainContent += `  versioning {\n    enabled = true\n  }\n`;
           return;
       }
-      let formattedValue = value;
-      if (typeof value === 'string') {
-        const isReference = value.startsWith('var.') || /^[a-z0-9_]+\.[a-z0-9_]+\.[a-z0-9_]+$/.test(value) || /^[a-z0-9_]+\.[a-z0-9_]+$/.test(value);
-        if (!isReference) formattedValue = `"${value}"`;
-      } else if (typeof value === 'boolean') {
-        formattedValue = value ? 'true' : 'false';
-      }
-      mainContent += `  ${key} = ${formattedValue}\n`;
+      mainContent += `  ${key} = ${formatHclValue(value)}\n`;
     });
     mainContent += '}\n\n';
   });
