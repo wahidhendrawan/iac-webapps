@@ -6,12 +6,21 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 3
-    # No grouping - individual PRs prevent conflicts and allow granular review
+    # Individual PRs, except for packages that peer-pin each other: bumped alone
+    # they fail `npm ci` with ERESOLVE (e.g. vitest without @vitest/coverage-v8).
+    groups:
+      vitest:
+        patterns: ["vitest", "@vitest/*"]
+      eslint:
+        patterns: ["eslint", "@eslint/*", "typescript-eslint", "eslint-plugin-*"]
     ignore:
       - dependency-name: ip-address
         # Bundled within npm itself; cannot be updated directly.
       - dependency-name: npm
         # npm is a tool bundled with Node.js, not a library dependency.
+      - dependency-name: typescript
+        # typescript-eslint peer-requires typescript <6.1; drop once it supports newer.
+        versions: [">=6.1.0"]
 
   - package-ecosystem: docker
     directory: /

@@ -97,7 +97,9 @@ describe('sanitizeHclString', () => {
   it('escapes backslashes, quotes, and control characters', () => {
     expect(sanitizeHclString('a"b')).toBe('a\\"b');
     expect(sanitizeHclString('a\\b')).toBe('a\\\\b');
-    expect(sanitizeHclString('${var}')).toBe('\\${var}');
+    expect(sanitizeHclString('${var}')).toBe('$${var}');
+    expect(sanitizeHclString('%{ if x }')).toBe('%%{ if x }');
+    expect(sanitizeHclString('cost $5')).toBe('cost $5');
     expect(sanitizeHclString('line1\nline2')).toBe('line1\\nline2');
     expect(sanitizeHclString('tab\there')).toBe('tab\\there');
   });

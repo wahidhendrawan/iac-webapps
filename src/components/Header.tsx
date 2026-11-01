@@ -49,7 +49,10 @@ export function Header({ onOpenAbout, onOpenBackend, onOpenTemplates, onOpenDevO
     reader.onload = (event) => {
       const content = event.target?.result as string;
       try {
-        const importedResources = parseHCL(content);
+        const { resources: importedResources, skipped } = parseHCL(content);
+        if (skipped.length > 0) {
+            alert(`Skipped unsupported resources: ${skipped.join(', ')}`);
+        }
         if (importedResources.length > 0) {
             setResources(importedResources);
         } else {

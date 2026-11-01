@@ -1,10 +1,10 @@
+# IaC WebApps
+
 [![CI](https://github.com/wahidhendrawan/iac-webapps/actions/workflows/ci.yml/badge.svg)](https://github.com/wahidhendrawan/iac-webapps/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/wahidhendrawan/iac-webapps?sort=semver)](https://github.com/wahidhendrawan/iac-webapps/releases/latest)
+[![License](https://img.shields.io/github/license/wahidhendrawan/iac-webapps)](LICENSE)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/wahidhendrawan/iac-webapps/badge)](https://scorecard.dev/viewer/?uri=github.com/wahidhendrawan/iac-webapps)
 [![Coverage threshold](https://img.shields.io/badge/coverage%20threshold-70%25-brightgreen)](vitest.config.ts)
-
-# IaC WebApps (v1.7.0)
-
-[![Project Status](https://img.shields.io/badge/status-active-emerald.svg)]()
-[![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)](tsconfig.json)
 [![React](https://img.shields.io/badge/React%2019-61DAFB?logo=react)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite)](vite.config.ts)
@@ -111,6 +111,10 @@ IaC generation, cost estimation, and security scanning run in-browser.
 *   **AI Integration**: DeepSeek API & OpenAI API
 *   **Styling**: Tailwind CSS (Dark Mode supported)
 *   **Currency API**: Open Exchange Rates
+
+## Security
+
+Please report vulnerabilities privately as described in [SECURITY.md](SECURITY.md), not in a public issue.
 
 ## 📜 License
 

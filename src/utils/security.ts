@@ -83,14 +83,16 @@ export function warnAboutLocalStorageSecrets(): void {
  * Removes potentially dangerous characters and escape sequences
  */
 export function sanitizeHclString(value: string): string {
-  // Escape special characters in HCL strings
+  // Escape special characters in HCL strings. HCL has no `\$` escape:
+  // template sequences are neutralised by doubling them ($${ and %%{).
   return value
     .replace(/\\/g, '\\\\')
     .replace(/"/g, '\\"')
-    .replace(/\$/g, '\\$')
     .replace(/\n/g, '\\n')
     .replace(/\r/g, '\\r')
-    .replace(/\t/g, '\\t');
+    .replace(/\t/g, '\\t')
+    .replace(/\$\{/g, () => '$${') // function form: '$$' in a replacement string means '$'
+    .replace(/%\{/g, '%%{');
 }
 
 /**

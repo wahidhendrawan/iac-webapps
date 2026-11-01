@@ -80,37 +80,12 @@ description: A Pulumi TypeScript program
         return;
     }
 
-    // Convert properties
-    const props: Record<string, unknown> = {};
-    Object.entries(res.properties).forEach(([key, value]) => {
-      if (value === undefined || value === null || value === '') return;
-      
-      let formattedValue = value;
-      if (typeof value === 'string') {
-        // Handle Interpolation: aws_vpc.main.id -> vpc_main.id
-        const refParts = value.split('.');
-        if (refParts.length >= 2) {
-             const target = resources.find(r => r.type === refParts[0] && r.name === refParts[1]);
-             if (target) {
-                const camelName = target.name.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
-                formattedValue = `__REF__${camelName}.${refParts[2] || 'id'}`;
-             } else {
-                formattedValue = `"${value}"`;
-             }
-        } else if (value.startsWith('var.')) {
-            formattedValue = `config.require("${value.replace('var.', '')}")`;
-        } else {
-            formattedValue = `"${value}"`;
-        }
-      }
-      props[key] = formattedValue;
-    });
-
+    // Convert properties to TypeScript expressions; literals go through JSON.stringify so user text stays inside its string.
+    const props = Object.entries(res.properties)
+      .filter(([, value]) => value !== undefined && value !== null && value !== '')
+      .map(([key, value]) => `  ${JSON.stringify(key)}: ${toPulumiExpression(value, resources)}`);
+    const propsStr = props.length ? `{\n${props.join(',\n')}\n}` : '{}';
     const camelResName = res.name.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
-    let propsStr = JSON.stringify(props, null, 2);
-    // Remove quotes around references and config calls
-    propsStr = propsStr.replace(/"__REF__(.*?)"/g, '$1');
-    propsStr = propsStr.replace(/"config\.require\((.*?)\)"/g, 'config.require($1)');
 
     indexContent += `const ${camelResName} = new ${pulumiClass}("${res.name}", ${propsStr});\n\n`;
   });
@@ -126,4 +101,15 @@ description: A Pulumi TypeScript program
   files.push({ filename: 'index.ts', content: indexContent });
 
   return files;
+}
+
+function toPulumiExpression(value: unknown, resources: Resource[]): string {
+  // Handle Interpolation: aws_vpc.main.id -> main.id, var.x -> config.require("x")
+  const ref = typeof value === 'string' ? /^([a-z0-9_]+)\.([A-Za-z_]\w*)(?:\.([A-Za-z_]\w*))?$/.exec(value) : null;
+  if (ref) {
+    if (ref[1] === 'var' && !ref[3]) return `config.require(${JSON.stringify(ref[2])})`;
+    const target = resources.find(r => r.type === ref[1] && r.name === ref[2]);
+    if (target) return `${target.name.replace(/_([a-z])/g, (g) => g[1].toUpperCase())}.${ref[3] || 'id'}`;
+  }
+  return JSON.stringify(value, null, 2).replace(/\n/g, '\n  ');
 }
